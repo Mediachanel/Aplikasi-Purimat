@@ -58,8 +58,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.data.model.FacilityBookingEntity
 import com.example.ui.components.StatusBadge
-import com.example.ui.theme.EmeraldContainer
-import com.example.ui.theme.EmeraldPrimary
+import com.example.ui.theme.OrangeContainer
+import com.example.ui.theme.OrangePrimary
 import com.example.ui.theme.StatusDanger
 import com.example.ui.viewmodel.PurimasViewModel
 import com.example.ui.viewmodel.UserRole
@@ -109,7 +109,7 @@ fun FasilitasScreen(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    FacilitySummaryChip("Lapangan Badminton", Icons.Default.SportsTennis, EmeraldPrimary, Modifier.weight(1f))
+                    FacilitySummaryChip("Lapangan Badminton", Icons.Default.SportsTennis, OrangePrimary, Modifier.weight(1f))
                     FacilitySummaryChip("Balai Warga RT 13", Icons.Default.MeetingRoom, Color(0xFF0F766E), Modifier.weight(1f))
                 }
                 Spacer(modifier = Modifier.height(8.dp))
@@ -143,7 +143,7 @@ fun FasilitasScreen(
 
         FloatingActionButton(
             onClick = { viewModel.showNewBookingModal.value = true },
-            containerColor = EmeraldPrimary,
+            containerColor = OrangePrimary,
             contentColor = Color.White,
             modifier = Modifier
                 .align(Alignment.BottomEnd)
@@ -223,7 +223,7 @@ fun BookingItemCard(
             Text(
                 text = "Waktu: ${booking.date} • ${booking.timeSlot}",
                 fontSize = 12.sp,
-                color = EmeraldPrimary,
+                color = OrangePrimary,
                 fontWeight = FontWeight.SemiBold
             )
             Text(
@@ -257,7 +257,7 @@ fun BookingItemCard(
                     }
                     Button(
                         onClick = onApprove,
-                        colors = ButtonDefaults.buttonColors(containerColor = EmeraldPrimary),
+                        colors = ButtonDefaults.buttonColors(containerColor = OrangePrimary),
                         shape = RoundedCornerShape(8.dp)
                     ) {
                         Icon(Icons.Default.Check, contentDescription = null, modifier = Modifier.size(16.dp))
@@ -408,7 +408,7 @@ fun NewBookingDialog(
                     }
                 },
                 enabled = purposeText.isNotBlank(),
-                colors = ButtonDefaults.buttonColors(containerColor = EmeraldPrimary)
+                colors = ButtonDefaults.buttonColors(containerColor = OrangePrimary)
             ) {
                 Text("Kirim Permohonan")
             }

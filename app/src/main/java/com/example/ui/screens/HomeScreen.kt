@@ -67,13 +67,12 @@ import com.example.R
 import com.example.data.repository.PurimasRepository
 import com.example.ui.components.StatCard
 import com.example.ui.components.StatusBadge
-import com.example.ui.theme.EmeraldContainer
-import com.example.ui.theme.EmeraldPrimary
-import com.example.ui.theme.GoldContainer
-import com.example.ui.theme.GoldTertiary
-import com.example.ui.theme.OnEmeraldContainer
-import com.example.ui.theme.TealContainer
-import com.example.ui.theme.TealSecondary
+import com.example.ui.theme.AmberContainer
+import com.example.ui.theme.AmberSecondary
+import com.example.ui.theme.CoralTertiary
+import com.example.ui.theme.OnOrangeContainer
+import com.example.ui.theme.OrangeContainer
+import com.example.ui.theme.OrangePrimary
 import com.example.ui.viewmodel.MainTab
 import com.example.ui.viewmodel.PurimasViewModel
 import com.example.ui.viewmodel.UserRole
@@ -104,7 +103,7 @@ fun HomeScreen(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(200.dp)
+                    .height(210.dp)
             ) {
                 Image(
                     painter = painterResource(id = R.drawable.purimas_hero),
@@ -119,8 +118,8 @@ fun HomeScreen(
                             Brush.verticalGradient(
                                 colors = listOf(
                                     Color.Transparent,
-                                    Color(0xAA064E3B),
-                                    Color(0xF00B131F)
+                                    Color(0x999A3412),
+                                    Color(0xF518110D)
                                 )
                             )
                         )
@@ -134,7 +133,7 @@ fun HomeScreen(
                         Box(
                             modifier = Modifier
                                 .clip(RoundedCornerShape(6.dp))
-                                .background(Color(0xFF10B981))
+                                .background(OrangePrimary)
                                 .padding(horizontal = 8.dp, vertical = 3.dp)
                         ) {
                             Text(
@@ -146,9 +145,10 @@ fun HomeScreen(
                         }
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
-                            text = "Kel. Tirtajaya, Kec. Sukmajaya, Depok",
-                            color = Color(0xFFE2E8F0),
-                            fontSize = 11.sp
+                            text = "Jl. Kp. Parung Serab, Sukmajaya - Depok",
+                            color = Color(0xFFFFEDD5),
+                            fontSize = 11.sp,
+                            fontWeight = FontWeight.Medium
                         )
                     }
                     Spacer(modifier = Modifier.height(4.dp))
@@ -157,6 +157,11 @@ fun HomeScreen(
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.ExtraBold,
                         color = Color.White
+                    )
+                    Text(
+                        text = "Area Grand Depok City (GDC) • 10 Menit Stasiun KRL Depok Lama",
+                        color = Color(0xFFFED7AA),
+                        fontSize = 10.sp
                     )
                 }
             }
@@ -184,13 +189,13 @@ fun HomeScreen(
                             modifier = Modifier
                                 .size(46.dp)
                                 .clip(CircleShape)
-                                .background(EmeraldContainer),
+                                .background(OrangeContainer),
                             contentAlignment = Alignment.Center
                         ) {
                             Icon(
                                 imageVector = Icons.Default.Home,
                                 contentDescription = null,
-                                tint = EmeraldPrimary,
+                                tint = OrangePrimary,
                                 modifier = Modifier.size(26.dp)
                             )
                         }
@@ -203,7 +208,7 @@ fun HomeScreen(
                             )
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Text(
-                                    text = activeResident?.fullAddress ?: "Purimas Tirtajaya",
+                                    text = activeResident?.fullAddress ?: "Purimas Tirtajaya (Jl. Kp. Parung Serab)",
                                     fontSize = 12.sp,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
@@ -217,7 +222,7 @@ fun HomeScreen(
                         contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 10.dp, vertical = 4.dp),
                         modifier = Modifier.testTag("btn_switch_unit")
                     ) {
-                        Text(text = "Ganti Rumah", fontSize = 11.sp)
+                        Text(text = "Ganti Rumah", fontSize = 11.sp, color = OrangePrimary)
                     }
                 }
             }
@@ -231,7 +236,7 @@ fun HomeScreen(
                     .padding(horizontal = 16.dp, vertical = 6.dp)
                     .testTag("current_bill_card"),
                 colors = CardDefaults.cardColors(
-                    containerColor = if (currentMonthBill?.status == "LUNAS") EmeraldContainer.copy(alpha = 0.5f) else GoldContainer.copy(alpha = 0.6f)
+                    containerColor = if (currentMonthBill?.status == "LUNAS") OrangeContainer.copy(alpha = 0.5f) else AmberContainer.copy(alpha = 0.6f)
                 ),
                 shape = RoundedCornerShape(18.dp)
             ) {
@@ -245,7 +250,7 @@ fun HomeScreen(
                             Icon(
                                 imageVector = Icons.Default.CreditCard,
                                 contentDescription = null,
-                                tint = if (currentMonthBill?.status == "LUNAS") EmeraldPrimary else GoldTertiary,
+                                tint = if (currentMonthBill?.status == "LUNAS") OrangePrimary else AmberSecondary,
                                 modifier = Modifier.size(22.dp)
                             )
                             Spacer(modifier = Modifier.width(8.dp))
@@ -270,7 +275,7 @@ fun HomeScreen(
                                 text = "Rp 140.000",
                                 fontSize = 24.sp,
                                 fontWeight = FontWeight.ExtraBold,
-                                color = if (currentMonthBill?.status == "LUNAS") EmeraldPrimary else Color(0xFF9A3412)
+                                color = if (currentMonthBill?.status == "LUNAS") OrangePrimary else Color(0xFFC2410C)
                             )
                             Text(
                                 text = "Keamanan 24 Jam • Sampah • Kas PJU RT",
@@ -288,7 +293,7 @@ fun HomeScreen(
                         if (currentMonthBill?.status == "LUNAS") {
                             Button(
                                 onClick = { viewModel.showReceiptBill.value = currentMonthBill },
-                                colors = ButtonDefaults.buttonColors(containerColor = EmeraldPrimary),
+                                colors = ButtonDefaults.buttonColors(containerColor = OrangePrimary),
                                 shape = RoundedCornerShape(12.dp)
                             ) {
                                 Icon(Icons.Default.Receipt, contentDescription = null, modifier = Modifier.size(16.dp))
@@ -298,7 +303,7 @@ fun HomeScreen(
                         } else if (currentMonthBill != null) {
                             Button(
                                 onClick = { viewModel.openPaymentModal(currentMonthBill) },
-                                colors = ButtonDefaults.buttonColors(containerColor = EmeraldPrimary),
+                                colors = ButtonDefaults.buttonColors(containerColor = OrangePrimary),
                                 shape = RoundedCornerShape(12.dp),
                                 modifier = Modifier.testTag("btn_pay_now_home")
                             ) {
@@ -326,7 +331,7 @@ fun HomeScreen(
                     Text(
                         text = "Lihat Rincian →",
                         fontSize = 12.sp,
-                        color = EmeraldPrimary,
+                        color = OrangePrimary,
                         fontWeight = FontWeight.SemiBold,
                         modifier = Modifier.clickable { viewModel.switchTab(MainTab.KAS) }
                     )
@@ -343,8 +348,8 @@ fun HomeScreen(
                         value = PurimasRepository.formatRupiah(currentBalance),
                         subtitle = "Buku Kas Terbuka",
                         icon = Icons.Default.AccountBalanceWallet,
-                        iconTint = EmeraldPrimary,
-                        containerColor = EmeraldContainer.copy(alpha = 0.45f),
+                        iconTint = OrangePrimary,
+                        containerColor = OrangeContainer.copy(alpha = 0.5f),
                         modifier = Modifier.weight(1f),
                         tag = "stat_saldo_kas"
                     )
@@ -354,7 +359,7 @@ fun HomeScreen(
                         subtitle = "Iuran & Fasum",
                         icon = Icons.Default.TrendingUp,
                         iconTint = Color(0xFF16A34A),
-                        containerColor = TealContainer.copy(alpha = 0.4f),
+                        containerColor = AmberContainer.copy(alpha = 0.45f),
                         modifier = Modifier.weight(1f),
                         tag = "stat_pemasukan"
                     )
@@ -376,16 +381,16 @@ fun HomeScreen(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    QuickActionIcon("Iuran & VA", Icons.Default.Receipt, EmeraldPrimary) {
+                    QuickActionIcon("Iuran & VA", Icons.Default.Receipt, OrangePrimary) {
                         viewModel.switchTab(MainTab.IURAN)
                     }
-                    QuickActionIcon("Kas Transparan", Icons.Default.AccountBalance, TealSecondary) {
+                    QuickActionIcon("Kas Transparan", Icons.Default.AccountBalance, AmberSecondary) {
                         viewModel.switchTab(MainTab.KAS)
                     }
-                    QuickActionIcon("Booking Fasum", Icons.Default.SportsTennis, GoldTertiary) {
+                    QuickActionIcon("Booking Fasum", Icons.Default.SportsTennis, Color(0xFFF97316)) {
                         viewModel.switchTab(MainTab.FASILITAS)
                     }
-                    QuickActionIcon("Warga RT", Icons.Default.People, Color(0xFF0284C7)) {
+                    QuickActionIcon("Warga RT", Icons.Default.People, Color(0xFFD97706)) {
                         viewModel.switchTab(MainTab.WARGA)
                     }
                 }
@@ -402,7 +407,7 @@ fun HomeScreen(
                     QuickActionIcon("Arsip Dokumen", Icons.Default.Description, Color(0xFF0D9488)) {
                         viewModel.switchTab(MainTab.DOKUMEN)
                     }
-                    QuickActionIcon("Audit Enkripsi", Icons.Default.Shield, EmeraldPrimary) {
+                    QuickActionIcon("Audit Enkripsi", Icons.Default.Shield, OrangePrimary) {
                         viewModel.showEncryptionAuditModal.value = true
                     }
                     QuickActionIcon(

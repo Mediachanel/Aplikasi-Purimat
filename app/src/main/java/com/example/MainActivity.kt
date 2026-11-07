@@ -92,10 +92,10 @@ import com.example.ui.screens.HomeScreen
 import com.example.ui.screens.IuranScreen
 import com.example.ui.screens.KasScreen
 import com.example.ui.screens.WargaScreen
-import com.example.ui.theme.EmeraldContainer
-import com.example.ui.theme.EmeraldPrimary
 import com.example.ui.theme.MyApplicationTheme
-import com.example.ui.theme.OnEmeraldContainer
+import com.example.ui.theme.OnOrangeContainer
+import com.example.ui.theme.OrangeContainer
+import com.example.ui.theme.OrangePrimary
 import com.example.ui.viewmodel.MainTab
 import com.example.ui.viewmodel.PurimasViewModel
 import com.example.ui.viewmodel.UserRole
@@ -161,7 +161,7 @@ class MainActivity : ComponentActivity() {
                                             text = "Purimas RT 013",
                                             fontWeight = FontWeight.ExtraBold,
                                             fontSize = 17.sp,
-                                            color = EmeraldPrimary
+                                            color = OrangePrimary
                                         )
                                         Spacer(modifier = Modifier.width(6.dp))
                                         Box(
@@ -220,7 +220,7 @@ class MainActivity : ComponentActivity() {
                                     Icon(
                                         imageVector = Icons.Default.Person,
                                         contentDescription = "Ganti Rumah / Akun",
-                                        tint = EmeraldPrimary
+                                        tint = OrangePrimary
                                     )
                                 }
                             }
@@ -240,8 +240,8 @@ class MainActivity : ComponentActivity() {
                                 icon = { Icon(Icons.Default.Home, contentDescription = "Beranda") },
                                 label = { Text("Beranda", fontSize = 10.sp) },
                                 colors = NavigationBarItemDefaults.colors(
-                                    selectedIconColor = EmeraldPrimary,
-                                    indicatorColor = EmeraldContainer
+                                    selectedIconColor = OrangePrimary,
+                                    indicatorColor = OrangeContainer
                                 )
                             )
                             NavigationBarItem(
@@ -250,8 +250,8 @@ class MainActivity : ComponentActivity() {
                                 icon = { Icon(Icons.Default.Receipt, contentDescription = "Iuran") },
                                 label = { Text("Iuran VA", fontSize = 10.sp) },
                                 colors = NavigationBarItemDefaults.colors(
-                                    selectedIconColor = EmeraldPrimary,
-                                    indicatorColor = EmeraldContainer
+                                    selectedIconColor = OrangePrimary,
+                                    indicatorColor = OrangeContainer
                                 )
                             )
                             NavigationBarItem(
@@ -260,8 +260,8 @@ class MainActivity : ComponentActivity() {
                                 icon = { Icon(Icons.Default.AccountBalance, contentDescription = "Kas RT") },
                                 label = { Text("Kas RT", fontSize = 10.sp) },
                                 colors = NavigationBarItemDefaults.colors(
-                                    selectedIconColor = EmeraldPrimary,
-                                    indicatorColor = EmeraldContainer
+                                    selectedIconColor = OrangePrimary,
+                                    indicatorColor = OrangeContainer
                                 )
                             )
                             NavigationBarItem(
@@ -270,8 +270,8 @@ class MainActivity : ComponentActivity() {
                                 icon = { Icon(Icons.Default.SportsTennis, contentDescription = "Fasum") },
                                 label = { Text("Fasum", fontSize = 10.sp) },
                                 colors = NavigationBarItemDefaults.colors(
-                                    selectedIconColor = EmeraldPrimary,
-                                    indicatorColor = EmeraldContainer
+                                    selectedIconColor = OrangePrimary,
+                                    indicatorColor = OrangeContainer
                                 )
                             )
                             NavigationBarItem(
@@ -280,8 +280,8 @@ class MainActivity : ComponentActivity() {
                                 icon = { Icon(Icons.Default.MoreHoriz, contentDescription = "Lainnya") },
                                 label = { Text("Lainnya", fontSize = 10.sp) },
                                 colors = NavigationBarItemDefaults.colors(
-                                    selectedIconColor = EmeraldPrimary,
-                                    indicatorColor = EmeraldContainer
+                                    selectedIconColor = OrangePrimary,
+                                    indicatorColor = OrangeContainer
                                 )
                             )
                         }
@@ -358,7 +358,7 @@ class MainActivity : ComponentActivity() {
                                     title = if (currentRole == UserRole.PENGURUS_RT) "Dashboard Admin Pengurus RT" else "Akses Level Pengurus RT (PIN)",
                                     desc = "Kendali tunggakan, blast WA tgl 25, approval fasum",
                                     icon = Icons.Default.AdminPanelSettings,
-                                    color = if (currentRole == UserRole.PENGURUS_RT) Color(0xFFDC2626) else EmeraldPrimary
+                                    color = if (currentRole == UserRole.PENGURUS_RT) Color(0xFFDC2626) else OrangePrimary
                                 ) {
                                     showMoreMenuSheet = false
                                     if (currentRole == UserRole.PENGURUS_RT) {
@@ -523,7 +523,7 @@ fun ResidentSwitcherDialog(
                         val isSelected = res.id == activeId
                         Card(
                             colors = CardDefaults.cardColors(
-                                containerColor = if (isSelected) EmeraldContainer else MaterialTheme.colorScheme.surface
+                                containerColor = if (isSelected) OrangeContainer else MaterialTheme.colorScheme.surface
                             ),
                             shape = RoundedCornerShape(10.dp),
                             modifier = Modifier

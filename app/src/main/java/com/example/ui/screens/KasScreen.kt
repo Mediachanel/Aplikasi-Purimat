@@ -59,12 +59,11 @@ import androidx.compose.ui.unit.sp
 import com.example.data.model.CashTransactionEntity
 import com.example.data.repository.PurimasRepository
 import com.example.ui.components.StatCard
-import com.example.ui.theme.EmeraldContainer
-import com.example.ui.theme.EmeraldPrimary
-import com.example.ui.theme.GoldContainer
+import com.example.ui.theme.OrangeContainer
+import com.example.ui.theme.OrangePrimary
+import com.example.ui.theme.AmberContainer
 import com.example.ui.theme.StatusDanger
 import com.example.ui.theme.StatusSuccess
-import com.example.ui.theme.TealContainer
 import com.example.ui.viewmodel.PurimasViewModel
 import com.example.ui.viewmodel.UserRole
 
@@ -149,7 +148,7 @@ fun KasScreen(
                             }
                             context.startActivity(Intent.createChooser(sendIntent, "Bagikan Laporan Kas RT"))
                         },
-                        colors = ButtonDefaults.buttonColors(containerColor = EmeraldPrimary),
+                        colors = ButtonDefaults.buttonColors(containerColor = OrangePrimary),
                         shape = RoundedCornerShape(10.dp)
                     ) {
                         Icon(Icons.Default.Share, contentDescription = null, modifier = Modifier.size(16.dp))
@@ -166,8 +165,8 @@ fun KasScreen(
                     value = PurimasRepository.formatRupiah(currentBalance),
                     subtitle = "Tersimpan aman di Rekening Giro Kas Lingkungan",
                     icon = Icons.Default.TrendingUp,
-                    iconTint = EmeraldPrimary,
-                    containerColor = EmeraldContainer.copy(alpha = 0.5f),
+                    iconTint = OrangePrimary,
+                    containerColor = OrangeContainer.copy(alpha = 0.5f),
                     modifier = Modifier.fillMaxWidth()
                 )
 
@@ -183,7 +182,7 @@ fun KasScreen(
                         subtitle = "Iuran & Sewa",
                         icon = Icons.Default.ArrowDownward,
                         iconTint = Color(0xFF16A34A),
-                        containerColor = TealContainer.copy(alpha = 0.4f),
+                        containerColor = AmberContainer.copy(alpha = 0.5f),
                         modifier = Modifier.weight(1f)
                     )
                     StatCard(
@@ -240,7 +239,7 @@ fun KasScreen(
         if (currentRole == UserRole.PENGURUS_RT) {
             FloatingActionButton(
                 onClick = { viewModel.showNewCashModal.value = true },
-                containerColor = EmeraldPrimary,
+                containerColor = OrangePrimary,
                 contentColor = Color.White,
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
@@ -365,7 +364,7 @@ fun NewCashTransactionDialog(
                             category = categoriesMasuk.first()
                         },
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = if (type == "MASUK") EmeraldPrimary else Color(0xFFE2E8F0),
+                            containerColor = if (type == "MASUK") OrangePrimary else Color(0xFFE2E8F0),
                             contentColor = if (type == "MASUK") Color.White else Color(0xFF334155)
                         ),
                         modifier = Modifier.weight(1f)
@@ -426,7 +425,7 @@ fun NewCashTransactionDialog(
                     }
                 },
                 enabled = amountText.isNotBlank() && titleText.isNotBlank(),
-                colors = ButtonDefaults.buttonColors(containerColor = EmeraldPrimary)
+                colors = ButtonDefaults.buttonColors(containerColor = OrangePrimary)
             ) {
                 Text("Simpan Transaksi")
             }

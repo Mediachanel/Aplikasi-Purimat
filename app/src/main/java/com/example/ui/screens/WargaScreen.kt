@@ -59,9 +59,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.data.model.ResidentEntity
 import com.example.data.security.DataEncryptionUtil
-import com.example.ui.theme.EmeraldContainer
-import com.example.ui.theme.EmeraldPrimary
-import com.example.ui.theme.TealSecondary
+import com.example.ui.theme.OrangeContainer
+import com.example.ui.theme.OrangePrimary
+import com.example.ui.theme.AmberSecondary
 import com.example.ui.viewmodel.PurimasViewModel
 import com.example.ui.viewmodel.UserRole
 
@@ -164,7 +164,7 @@ fun WargaScreen(
         if (currentRole == UserRole.PENGURUS_RT) {
             FloatingActionButton(
                 onClick = { viewModel.showAddResidentModal.value = true },
-                containerColor = EmeraldPrimary,
+                containerColor = OrangePrimary,
                 contentColor = Color.White,
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
@@ -215,13 +215,13 @@ fun ResidentItemCard(
                 modifier = Modifier
                     .size(46.dp)
                     .clip(CircleShape)
-                    .background(EmeraldContainer),
+                    .background(OrangeContainer),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
                     imageVector = Icons.Default.Person,
                     contentDescription = null,
-                    tint = EmeraldPrimary,
+                    tint = OrangePrimary,
                     modifier = Modifier.size(24.dp)
                 )
             }
@@ -248,7 +248,7 @@ fun ResidentItemCard(
                 Text(
                     text = "${resident.blockNumber} No. ${resident.houseNumber} • ${resident.occupancyStatus}",
                     fontSize = 12.sp,
-                    color = EmeraldPrimary,
+                    color = OrangePrimary,
                     fontWeight = FontWeight.Medium
                 )
                 Row(
@@ -410,7 +410,7 @@ fun NewResidentDialog(
                     }
                 },
                 enabled = nameText.isNotBlank() && houseNoText.isNotBlank(),
-                colors = ButtonDefaults.buttonColors(containerColor = EmeraldPrimary)
+                colors = ButtonDefaults.buttonColors(containerColor = OrangePrimary)
             ) {
                 Text("Daftarkan Warga")
             }

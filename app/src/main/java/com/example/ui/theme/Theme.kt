@@ -17,53 +17,53 @@ import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
 private val DarkColorScheme = darkColorScheme(
-    primary = DarkEmeraldPrimary,
-    onPrimary = Color(0xFF003822),
-    primaryContainer = Color(0xFF005234),
-    onPrimaryContainer = Color(0xFFA7F3D0),
-    secondary = Color(0xFF5EEAD4),
-    onSecondary = Color(0xFF003734),
-    secondaryContainer = Color(0xFF134E4A),
-    onSecondaryContainer = Color(0xFF99F6E4),
-    tertiary = Color(0xFFFBBF24),
-    onTertiary = Color(0xFF451A03),
+    primary = DarkOrangePrimary,
+    onPrimary = Color(0xFF431407),
+    primaryContainer = Color(0xFF7C2D12),
+    onPrimaryContainer = Color(0xFFFFEDD5),
+    secondary = AmberSecondary,
+    onSecondary = Color(0xFF451A03),
+    secondaryContainer = Color(0xFF78350F),
+    onSecondaryContainer = Color(0xFFFEF3C7),
+    tertiary = CoralTertiary,
+    onTertiary = Color.White,
     background = DarkBackground,
     onBackground = DarkTextPrimary,
     surface = DarkSurface,
     onSurface = DarkTextPrimary,
     surfaceVariant = DarkSurfaceVariant,
     onSurfaceVariant = DarkTextSecondary,
-    outline = Color(0xFF334155),
+    outline = Color(0xFF573E31),
     error = Color(0xFFF87171)
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = EmeraldPrimary,
+    primary = OrangePrimary,
     onPrimary = Color.White,
-    primaryContainer = EmeraldContainer,
-    onPrimaryContainer = OnEmeraldContainer,
-    secondary = TealSecondary,
+    primaryContainer = OrangeContainer,
+    onPrimaryContainer = OnOrangeContainer,
+    secondary = AmberSecondary,
     onSecondary = Color.White,
-    secondaryContainer = TealContainer,
-    onSecondaryContainer = OnTealContainer,
-    tertiary = GoldTertiary,
+    secondaryContainer = AmberContainer,
+    onSecondaryContainer = OnAmberContainer,
+    tertiary = CoralTertiary,
     onTertiary = Color.White,
-    tertiaryContainer = GoldContainer,
-    onTertiaryContainer = OnGoldContainer,
-    background = SlateBackground,
+    tertiaryContainer = CoralContainer,
+    onTertiaryContainer = OnCoralContainer,
+    background = WarmBackground,
     onBackground = TextPrimary,
-    surface = SlateSurface,
+    surface = WarmSurface,
     onSurface = TextPrimary,
-    surfaceVariant = SlateSurfaceVariant,
+    surfaceVariant = WarmSurfaceVariant,
     onSurfaceVariant = TextSecondary,
-    outline = SlateOutline,
+    outline = WarmOutline,
     error = StatusDanger
 )
 
 @Composable
 fun MyApplicationTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    dynamicColor: Boolean = false, // Set false to preserve our branded Purimas emerald identity
+    dynamicColor: Boolean = false, // Keep false to preserve Purimas orange brand identity
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {

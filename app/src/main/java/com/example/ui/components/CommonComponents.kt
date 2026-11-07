@@ -72,18 +72,15 @@ import com.example.data.model.BillEntity
 import com.example.data.model.ResidentEntity
 import com.example.data.repository.PurimasRepository
 import com.example.data.security.DataEncryptionUtil
-import com.example.ui.theme.EmeraldContainer
-import com.example.ui.theme.EmeraldPrimary
-import com.example.ui.theme.GoldContainer
-import com.example.ui.theme.GoldTertiary
-import com.example.ui.theme.OnEmeraldContainer
-import com.example.ui.theme.OnGoldContainer
-import com.example.ui.theme.OnTealContainer
+import com.example.ui.theme.OrangeContainer
+import com.example.ui.theme.OrangePrimary
+import com.example.ui.theme.AmberContainer
+import com.example.ui.theme.AmberSecondary
+import com.example.ui.theme.OnOrangeContainer
+import com.example.ui.theme.OnAmberContainer
 import com.example.ui.theme.StatusDanger
 import com.example.ui.theme.StatusSuccess
 import com.example.ui.theme.StatusWarning
-import com.example.ui.theme.TealContainer
-import com.example.ui.theme.TealSecondary
 import com.example.ui.viewmodel.UserRole
 import java.net.URLEncoder
 
@@ -209,7 +206,7 @@ fun VirtualAccountPaymentDialog(
                 Icon(
                     imageVector = Icons.Default.AccountBalance,
                     contentDescription = null,
-                    tint = EmeraldPrimary,
+                    tint = OrangePrimary,
                     modifier = Modifier.size(24.dp)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
@@ -279,7 +276,7 @@ fun VirtualAccountPaymentDialog(
                     Text(
                         text = "Total Iuran: ${PurimasRepository.formatRupiah(bill.amount)}",
                         fontWeight = FontWeight.ExtraBold,
-                        color = EmeraldPrimary,
+                        color = OrangePrimary,
                         fontSize = 18.sp
                     )
                     Text(
@@ -344,7 +341,7 @@ fun VirtualAccountPaymentDialog(
                                         imageVector = Icons.Default.ContentCopy,
                                         contentDescription = "Salin VA",
                                         modifier = Modifier.size(16.dp),
-                                        tint = EmeraldPrimary
+                                        tint = OrangePrimary
                                     )
                                 }
                             }
@@ -353,7 +350,7 @@ fun VirtualAccountPaymentDialog(
                                 fontWeight = FontWeight.Bold,
                                 fontFamily = FontFamily.Monospace,
                                 fontSize = 18.sp,
-                                color = EmeraldPrimary
+                                color = OrangePrimary
                             )
                             Text(
                                 text = "Atas Nama: KAS RT 013 PURIMAS - ${bill.residentName.take(15)}",
@@ -373,7 +370,7 @@ fun VirtualAccountPaymentDialog(
                             CircularProgressIndicator(
                                 modifier = Modifier.size(20.dp),
                                 strokeWidth = 2.dp,
-                                color = EmeraldPrimary
+                                color = OrangePrimary
                             )
                             Spacer(modifier = Modifier.width(10.dp))
                             Text(
@@ -393,7 +390,7 @@ fun VirtualAccountPaymentDialog(
                         onDismiss()
                         onViewReceipt()
                     },
-                    colors = ButtonDefaults.buttonColors(containerColor = EmeraldPrimary)
+                    colors = ButtonDefaults.buttonColors(containerColor = OrangePrimary)
                 ) {
                     Text("Lihat Bukti Lunas")
                 }
@@ -401,7 +398,7 @@ fun VirtualAccountPaymentDialog(
                 Button(
                     onClick = { onSimulatePayment(selectedBank) },
                     enabled = !isProcessing,
-                    colors = ButtonDefaults.buttonColors(containerColor = EmeraldPrimary),
+                    colors = ButtonDefaults.buttonColors(containerColor = OrangePrimary),
                     modifier = Modifier.testTag("btn_instant_pay")
                 ) {
                     Text("Simulasi Bayar Instan (API Bank)")
@@ -434,7 +431,7 @@ fun DigitalReceiptDialog(
                 Icon(
                     imageVector = Icons.Default.QrCode,
                     contentDescription = null,
-                    tint = EmeraldPrimary,
+                    tint = OrangePrimary,
                     modifier = Modifier.size(24.dp)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
@@ -526,7 +523,7 @@ fun DigitalReceiptDialog(
                     }
                     context.startActivity(Intent.createChooser(sendIntent, "Bagikan Bukti Lunas"))
                 },
-                colors = ButtonDefaults.buttonColors(containerColor = EmeraldPrimary)
+                colors = ButtonDefaults.buttonColors(containerColor = OrangePrimary)
             ) {
                 Text("Bagikan Kuitansi")
             }
@@ -654,7 +651,7 @@ fun AdminPinDialog(
                 Icon(
                     imageVector = Icons.Default.AdminPanelSettings,
                     contentDescription = null,
-                    tint = EmeraldPrimary,
+                    tint = OrangePrimary,
                     modifier = Modifier.size(26.dp)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
@@ -692,7 +689,7 @@ fun AdminPinDialog(
         confirmButton = {
             Button(
                 onClick = { onVerify(pinText) },
-                colors = ButtonDefaults.buttonColors(containerColor = EmeraldPrimary),
+                colors = ButtonDefaults.buttonColors(containerColor = OrangePrimary),
                 modifier = Modifier.testTag("btn_verify_pin")
             ) {
                 Text("Masuk Mode Admin")
@@ -720,7 +717,7 @@ fun EncryptionAuditDialog(
                 Icon(
                     imageVector = Icons.Default.Shield,
                     contentDescription = null,
-                    tint = EmeraldPrimary,
+                    tint = OrangePrimary,
                     modifier = Modifier.size(24.dp)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
@@ -768,7 +765,7 @@ fun EncryptionAuditDialog(
         confirmButton = {
             Button(
                 onClick = onDismiss,
-                colors = ButtonDefaults.buttonColors(containerColor = EmeraldPrimary)
+                colors = ButtonDefaults.buttonColors(containerColor = OrangePrimary)
             ) {
                 Text("Tutup")
             }
@@ -784,7 +781,7 @@ private fun BulletItem(text: String) {
             .padding(vertical = 3.dp),
         verticalAlignment = Alignment.Top
     ) {
-        Text("• ", fontWeight = FontWeight.Bold, color = EmeraldPrimary)
+        Text("• ", fontWeight = FontWeight.Bold, color = OrangePrimary)
         Text(text = text, fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurface)
     }
 }

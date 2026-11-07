@@ -58,8 +58,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.data.model.DiscussionCommentEntity
 import com.example.data.model.DiscussionPostEntity
-import com.example.ui.theme.EmeraldContainer
-import com.example.ui.theme.EmeraldPrimary
+import com.example.ui.theme.OrangeContainer
+import com.example.ui.theme.OrangePrimary
 import com.example.ui.viewmodel.PurimasViewModel
 
 @Composable
@@ -108,7 +108,7 @@ fun ForumScreen(
 
         FloatingActionButton(
             onClick = { viewModel.showNewPostModal.value = true },
-            containerColor = EmeraldPrimary,
+            containerColor = OrangePrimary,
             contentColor = Color.White,
             modifier = Modifier
                 .align(Alignment.BottomEnd)
@@ -168,13 +168,13 @@ fun DiscussionPostCard(
                         modifier = Modifier
                             .size(36.dp)
                             .clip(CircleShape)
-                            .background(EmeraldContainer),
+                            .background(OrangeContainer),
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
                             text = post.authorName.take(1),
                             fontWeight = FontWeight.Bold,
-                            color = EmeraldPrimary
+                            color = OrangePrimary
                         )
                     }
                     Spacer(modifier = Modifier.width(8.dp))
@@ -238,14 +238,14 @@ fun DiscussionPostCard(
                         imageVector = Icons.Default.ChatBubbleOutline,
                         contentDescription = null,
                         modifier = Modifier.size(16.dp),
-                        tint = EmeraldPrimary
+                        tint = OrangePrimary
                     )
                     Spacer(modifier = Modifier.width(4.dp))
                     Text(
                         text = "${post.commentCount} Komentar",
                         fontSize = 11.sp,
                         fontWeight = FontWeight.SemiBold,
-                        color = EmeraldPrimary
+                        color = OrangePrimary
                     )
                 }
             }
@@ -346,7 +346,7 @@ fun DiscussionDetailDialog(
                         enabled = newCommentText.isNotBlank(),
                         modifier = Modifier
                             .clip(CircleShape)
-                            .background(if (newCommentText.isNotBlank()) EmeraldPrimary else Color(0xFFE2E8F0))
+                            .background(if (newCommentText.isNotBlank()) OrangePrimary else Color(0xFFE2E8F0))
                     ) {
                         Icon(
                             imageVector = Icons.Default.Send,
@@ -442,7 +442,7 @@ fun NewDiscussionPostDialog(
                     }
                 },
                 enabled = titleText.isNotBlank() && contentText.isNotBlank(),
-                colors = ButtonDefaults.buttonColors(containerColor = EmeraldPrimary)
+                colors = ButtonDefaults.buttonColors(containerColor = OrangePrimary)
             ) {
                 Text("Terbitkan Topik")
             }

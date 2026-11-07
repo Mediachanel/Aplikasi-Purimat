@@ -59,10 +59,10 @@ import androidx.compose.ui.unit.sp
 import com.example.data.model.BillEntity
 import com.example.data.repository.PurimasRepository
 import com.example.ui.components.StatusBadge
-import com.example.ui.theme.EmeraldContainer
-import com.example.ui.theme.EmeraldPrimary
-import com.example.ui.theme.GoldContainer
-import com.example.ui.theme.GoldTertiary
+import com.example.ui.theme.OrangeContainer
+import com.example.ui.theme.OrangePrimary
+import com.example.ui.theme.AmberContainer
+import com.example.ui.theme.AmberSecondary
 import com.example.ui.theme.StatusDanger
 import com.example.ui.theme.StatusSuccess
 import com.example.ui.viewmodel.PurimasViewModel
@@ -113,7 +113,7 @@ fun IuranScreen(
 
             // Collection Progress Bar for Month
             Card(
-                colors = CardDefaults.cardColors(containerColor = EmeraldContainer.copy(alpha = 0.4f)),
+                colors = CardDefaults.cardColors(containerColor = OrangeContainer.copy(alpha = 0.4f)),
                 shape = RoundedCornerShape(12.dp),
                 modifier = Modifier.fillMaxWidth()
             ) {
@@ -132,7 +132,7 @@ fun IuranScreen(
                             text = "$paidCount dari $totalHouses Lunas (${(progress * 100).toInt()}%)",
                             fontSize = 12.sp,
                             fontWeight = FontWeight.Bold,
-                            color = EmeraldPrimary
+                            color = OrangePrimary
                         )
                     }
                     Spacer(modifier = Modifier.height(6.dp))
@@ -142,7 +142,7 @@ fun IuranScreen(
                             .fillMaxWidth()
                             .height(8.dp)
                             .clip(RoundedCornerShape(4.dp)),
-                        color = EmeraldPrimary,
+                        color = OrangePrimary,
                         trackColor = Color(0xFFE2E8F0)
                     )
                 }
@@ -301,7 +301,7 @@ fun BillItemCard(
                         text = PurimasRepository.formatRupiah(bill.amount),
                         fontWeight = FontWeight.ExtraBold,
                         fontSize = 18.sp,
-                        color = if (bill.status == "LUNAS") EmeraldPrimary else StatusDanger
+                        color = if (bill.status == "LUNAS") OrangePrimary else StatusDanger
                     )
                     if (bill.status == "LUNAS") {
                         Text(
@@ -332,7 +332,7 @@ fun BillItemCard(
                     } else {
                         Button(
                             onClick = onPayClick,
-                            colors = ButtonDefaults.buttonColors(containerColor = EmeraldPrimary),
+                            colors = ButtonDefaults.buttonColors(containerColor = OrangePrimary),
                             shape = RoundedCornerShape(10.dp)
                         ) {
                             Icon(Icons.Default.AccountBalance, contentDescription = null, modifier = Modifier.size(16.dp))
@@ -361,13 +361,13 @@ fun BillItemCard(
                                 onClick = onManualPaidClick,
                                 modifier = Modifier
                                     .clip(RoundedCornerShape(10.dp))
-                                    .background(EmeraldContainer)
+                                    .background(OrangeContainer)
                                     .size(38.dp)
                             ) {
                                 Icon(
                                     imageVector = Icons.Default.Check,
                                     contentDescription = "Tandai Lunas Manual",
-                                    tint = EmeraldPrimary,
+                                    tint = OrangePrimary,
                                     modifier = Modifier.size(18.dp)
                                 )
                             }

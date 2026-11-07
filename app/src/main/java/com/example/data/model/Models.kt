@@ -24,7 +24,7 @@ data class ResidentEntity(
     val isActive: Boolean = true
 ) {
     val fullAddress: String
-        get() = "$blockNumber No. $houseNumber, Purimas Tirtajaya"
+        get() = "$blockNumber No. $houseNumber, Purimas Tirtajaya (Jl. Kp. Parung Serab)"
 }
 
 /**

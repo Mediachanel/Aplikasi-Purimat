@@ -54,10 +54,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.data.model.DocumentArchiveEntity
-import com.example.ui.theme.EmeraldContainer
-import com.example.ui.theme.EmeraldPrimary
-import com.example.ui.theme.TealContainer
-import com.example.ui.theme.TealSecondary
+import com.example.ui.theme.OrangeContainer
+import com.example.ui.theme.OrangePrimary
+import com.example.ui.theme.AmberContainer
+import com.example.ui.theme.AmberSecondary
 import com.example.ui.viewmodel.PurimasViewModel
 
 @Composable
@@ -129,13 +129,13 @@ fun DocumentItemCard(
                 modifier = Modifier
                     .size(46.dp)
                     .clip(RoundedCornerShape(12.dp))
-                    .background(TealContainer),
+                    .background(AmberContainer),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
                     imageVector = Icons.Default.Description,
                     contentDescription = null,
-                    tint = TealSecondary,
+                    tint = AmberSecondary,
                     modifier = Modifier.size(26.dp)
                 )
             }
@@ -172,7 +172,7 @@ fun DocumentItemCard(
                 Text(
                     text = "Diterbitkan: ${document.issueDate} • ${document.fileNumber}",
                     fontSize = 10.sp,
-                    color = EmeraldPrimary,
+                    color = OrangePrimary,
                     fontWeight = FontWeight.Medium
                 )
             }
@@ -180,7 +180,7 @@ fun DocumentItemCard(
             Icon(
                 imageVector = Icons.Default.FileDownload,
                 contentDescription = "Buka Dokumen",
-                tint = EmeraldPrimary,
+                tint = OrangePrimary,
                 modifier = Modifier.size(20.dp)
             )
         }
@@ -219,7 +219,7 @@ fun DocumentDetailDialog(
                 Text(
                     text = "Tanda Tangan Sah: ${doc.officialSignatory}",
                     fontSize = 11.sp,
-                    color = EmeraldPrimary,
+                    color = OrangePrimary,
                     fontWeight = FontWeight.SemiBold
                 )
                 Spacer(modifier = Modifier.height(8.dp))
@@ -267,7 +267,7 @@ fun DocumentDetailDialog(
                         }
                         context.startActivity(Intent.createChooser(sendIntent, "Bagikan Dokumen RT"))
                     },
-                    colors = ButtonDefaults.buttonColors(containerColor = EmeraldPrimary)
+                    colors = ButtonDefaults.buttonColors(containerColor = OrangePrimary)
                 ) {
                     Icon(Icons.Default.Share, contentDescription = null, modifier = Modifier.size(16.dp))
                     Spacer(modifier = Modifier.width(4.dp))

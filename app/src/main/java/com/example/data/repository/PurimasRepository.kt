@@ -62,7 +62,7 @@ class PurimasRepository(private val db: PurimasDatabase) {
                 role = "WARGA"
             ),
             ResidentEntity(
-                fullName = "Bpk. Bambang Sulistyo (Ketua RT)",
+                fullName = "Bpk. Bambang Sulistyo (Ketua RT 013)",
                 blockNumber = "Blok A",
                 houseNumber = "05",
                 phoneNumber = "081377889900",
@@ -84,7 +84,7 @@ class PurimasRepository(private val db: PurimasDatabase) {
                 role = "PENGURUS"
             ),
             ResidentEntity(
-                fullName = "Bpk. Ahmad Fauzan (Sekretaris)",
+                fullName = "Bpk. Ahmad Fauzan (Sekretaris RT)",
                 blockNumber = "Blok B",
                 houseNumber = "12",
                 phoneNumber = "081900112233",
@@ -620,10 +620,15 @@ class PurimasRepository(private val db: PurimasDatabase) {
                     - Regu 3 (Minggu III): Warga Blok C
                     - Regu 4 (Minggu IV) : Warga Blok D
                     
-                    Nomor Telepon Darurat:
-                    - Pos Satpam Purimas : 0812-9900-1303
-                    - Polsek Sukmajaya   : (021) 7782-2110
-                    - Damkar Kota Depok  : (021) 7782-3113
+                    Nomor Telepon Darurat & Layanan Publik Sekitar:
+                    - Pos Satpam One-Gate Purimas : 0812-9900-1303
+                    - Polsek Sukmajaya (Jl. Merdeka) : (021) 7782-2110
+                    - Mako Damkar Kota Depok (GDC)  : (021) 7782-3113
+                    - RS HGA (Hasanah Graha Afiah)   : (021) 7782-6267
+                    - RS Hermina Depok Margonda     : (021) 7720-2525
+                    - Puskesmas Sukmajaya           : (021) 7782-7103
+                    - Info KRL Stasiun Depok Lama   : 121 / (021) 121
+                    - Call Center Kota Depok 112    : 112 (Bebas Pulsa)
                 """.trimIndent()
             ),
             DocumentArchiveEntity(

@@ -68,14 +68,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.data.repository.PurimasRepository
 import com.example.ui.components.StatCard
-import com.example.ui.theme.EmeraldContainer
-import com.example.ui.theme.EmeraldPrimary
-import com.example.ui.theme.GoldContainer
-import com.example.ui.theme.GoldTertiary
+import com.example.ui.theme.OrangeContainer
+import com.example.ui.theme.OrangePrimary
+import com.example.ui.theme.AmberContainer
+import com.example.ui.theme.AmberSecondary
 import com.example.ui.theme.StatusDanger
 import com.example.ui.theme.StatusSuccess
-import com.example.ui.theme.TealContainer
-import com.example.ui.theme.TealSecondary
 import com.example.ui.viewmodel.MainTab
 import com.example.ui.viewmodel.PurimasViewModel
 import com.example.ui.viewmodel.UserRole
@@ -121,13 +119,13 @@ fun AdminScreen(
                                 modifier = Modifier
                                     .size(46.dp)
                                     .clip(CircleShape)
-                                    .background(if (currentRole == UserRole.PENGURUS_RT) Color(0xFF10B981) else EmeraldContainer),
+                                    .background(if (currentRole == UserRole.PENGURUS_RT) Color(0xFF10B981) else OrangeContainer),
                                 contentAlignment = Alignment.Center
                             ) {
                                 Icon(
                                     imageVector = Icons.Default.AdminPanelSettings,
                                     contentDescription = null,
-                                    tint = if (currentRole == UserRole.PENGURUS_RT) Color.White else EmeraldPrimary,
+                                    tint = if (currentRole == UserRole.PENGURUS_RT) Color.White else OrangePrimary,
                                     modifier = Modifier.size(26.dp)
                                 )
                             }
@@ -150,7 +148,7 @@ fun AdminScreen(
                         Button(
                             onClick = { viewModel.requestSwitchToAdmin() },
                             colors = ButtonDefaults.buttonColors(
-                                containerColor = if (currentRole == UserRole.PENGURUS_RT) Color(0xFFDC2626) else EmeraldPrimary
+                                containerColor = if (currentRole == UserRole.PENGURUS_RT) Color(0xFFDC2626) else OrangePrimary
                             ),
                             shape = RoundedCornerShape(10.dp)
                         ) {
@@ -186,8 +184,8 @@ fun AdminScreen(
                     value = "${residents.size} KK",
                     subtitle = "RT 013 RW 003",
                     icon = Icons.Default.PersonAdd,
-                    iconTint = EmeraldPrimary,
-                    containerColor = EmeraldContainer.copy(alpha = 0.45f),
+                    iconTint = OrangePrimary,
+                    containerColor = OrangeContainer.copy(alpha = 0.45f),
                     modifier = Modifier.weight(1f)
                 )
             }
@@ -234,7 +232,7 @@ fun AdminScreen(
                 desc = "Input transaksi kas masuk (iuran tunai, donasi) atau kas keluar (honor satpam, sampah, PJU).",
                 icon = Icons.Default.AccountBalance,
                 badge = "Buku Kas",
-                iconColor = EmeraldPrimary,
+                iconColor = OrangePrimary,
                 onClick = { viewModel.showNewCashModal.value = true }
             )
 
@@ -245,7 +243,7 @@ fun AdminScreen(
                 desc = "Daftarkan kepala keluarga baru dengan enkripsi otomatis pada identitas NIK.",
                 icon = Icons.Default.PersonAdd,
                 badge = "+ Anggota",
-                iconColor = TealSecondary,
+                iconColor = AmberSecondary,
                 onClick = { viewModel.showAddResidentModal.value = true }
             )
 
@@ -305,7 +303,7 @@ fun AdminScreen(
 
                         Button(
                             onClick = { viewModel.markBillPaidManualByAdmin(bill) },
-                            colors = ButtonDefaults.buttonColors(containerColor = EmeraldPrimary),
+                            colors = ButtonDefaults.buttonColors(containerColor = OrangePrimary),
                             shape = RoundedCornerShape(8.dp),
                             contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 8.dp, vertical = 2.dp)
                         ) {
@@ -475,7 +473,7 @@ fun NewBroadcastDialog(
                     }
                 },
                 enabled = titleText.isNotBlank() && contentText.isNotBlank(),
-                colors = ButtonDefaults.buttonColors(containerColor = EmeraldPrimary)
+                colors = ButtonDefaults.buttonColors(containerColor = OrangePrimary)
             ) {
                 Text("Kirim Sekarang")
             }
