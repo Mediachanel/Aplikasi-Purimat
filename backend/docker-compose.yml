@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: purimas-api
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      - NODE_ENV=production
+      - JWT_SECRET=ganti-dengan-rahasia-jwt-server
+      # Jika menggunakan PostgreSQL di host/server luar container:
+      - DB_HOST=host.docker.internal
+      - DB_PORT=5432
+      - DB_NAME=purimas_db
+      - DB_USER=postgres
+      - DB_PASSWORD=password_db_anda
+      - DB_SSL=false
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
