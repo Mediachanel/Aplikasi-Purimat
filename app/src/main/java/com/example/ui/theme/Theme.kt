@@ -1,0 +1,97 @@
+package com.example.ui.theme
+
+import android.app.Activity
+import android.os.Build
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.dynamicDarkColorScheme
+import androidx.compose.material3.dynamicLightColorScheme
+import androidx.compose.material3.lightColorScheme
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
+import androidx.core.view.WindowCompat
+
+private val DarkColorScheme = darkColorScheme(
+    primary = DarkEmeraldPrimary,
+    onPrimary = Color(0xFF003822),
+    primaryContainer = Color(0xFF005234),
+    onPrimaryContainer = Color(0xFFA7F3D0),
+    secondary = Color(0xFF5EEAD4),
+    onSecondary = Color(0xFF003734),
+    secondaryContainer = Color(0xFF134E4A),
+    onSecondaryContainer = Color(0xFF99F6E4),
+    tertiary = Color(0xFFFBBF24),
+    onTertiary = Color(0xFF451A03),
+    background = DarkBackground,
+    onBackground = DarkTextPrimary,
+    surface = DarkSurface,
+    onSurface = DarkTextPrimary,
+    surfaceVariant = DarkSurfaceVariant,
+    onSurfaceVariant = DarkTextSecondary,
+    outline = Color(0xFF334155),
+    error = Color(0xFFF87171)
+)
+
+private val LightColorScheme = lightColorScheme(
+    primary = EmeraldPrimary,
+    onPrimary = Color.White,
+    primaryContainer = EmeraldContainer,
+    onPrimaryContainer = OnEmeraldContainer,
+    secondary = TealSecondary,
+    onSecondary = Color.White,
+    secondaryContainer = TealContainer,
+    onSecondaryContainer = OnTealContainer,
+    tertiary = GoldTertiary,
+    onTertiary = Color.White,
+    tertiaryContainer = GoldContainer,
+    onTertiaryContainer = OnGoldContainer,
+    background = SlateBackground,
+    onBackground = TextPrimary,
+    surface = SlateSurface,
+    onSurface = TextPrimary,
+    surfaceVariant = SlateSurfaceVariant,
+    onSurfaceVariant = TextSecondary,
+    outline = SlateOutline,
+    error = StatusDanger
+)
+
+@Composable
+fun MyApplicationTheme(
+    darkTheme: Boolean = isSystemInDarkTheme(),
+    dynamicColor: Boolean = false, // Set false to preserve our branded Purimas emerald identity
+    content: @Composable () -> Unit
+) {
+    val colorScheme = when {
+        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
+            val context = LocalContext.current
+            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+        }
+        darkTheme -> DarkColorScheme
+        else -> LightColorScheme
+    }
+
+    val view = LocalView.current
+    if (!view.isInEditMode) {
+        SideEffect {
+            val window = (view.context as? Activity)?.window
+            if (window != null) {
+                window.statusBarColor = Color.Transparent.toArgb()
+                window.navigationBarColor = Color.Transparent.toArgb()
+                val insetsController = WindowCompat.getInsetsController(window, view)
+                insetsController.isAppearanceLightStatusBars = !darkTheme
+                insetsController.isAppearanceLightNavigationBars = !darkTheme
+            }
+        }
+    }
+
+    MaterialTheme(
+        colorScheme = colorScheme,
+        typography = Typography,
+        content = content
+    )
+}

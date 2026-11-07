@@ -1,0 +1,6 @@
+{
+  "name": "Purimas RT 013",
+  "description": "Aplikasi RT dan Perumahan Purimas Tirtajaya Kota Depok untuk iuran, kas lingkungan, booking fasum, dan transparansi warga.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
