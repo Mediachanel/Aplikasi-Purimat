@@ -21,6 +21,9 @@ interface ResidentDao {
     @Query("SELECT * FROM residents ORDER BY blockNumber ASC, houseNumber ASC")
     fun getAllResidents(): Flow<List<ResidentEntity>>
 
+    @Query("SELECT * FROM residents ORDER BY blockNumber ASC, houseNumber ASC")
+    suspend fun getResidentList(): List<ResidentEntity>
+
     @Query("SELECT * FROM residents WHERE id = :id")
     suspend fun getResidentById(id: Long): ResidentEntity?
 
@@ -56,6 +59,15 @@ interface BillDao {
 
     @Query("SELECT COUNT(*) FROM bills")
     suspend fun getBillCount(): Int
+
+    @Query("SELECT DISTINCT monthName FROM bills ORDER BY year DESC, monthIndex DESC")
+    fun getDistinctMonths(): Flow<List<String>>
+
+    @Query("SELECT * FROM bills WHERE monthName = :monthName ORDER BY houseUnit ASC")
+    fun getBillsByMonth(monthName: String): Flow<List<BillEntity>>
+
+    @Query("SELECT * FROM bills WHERE monthName = :monthName")
+    suspend fun getBillsByMonthDirect(monthName: String): List<BillEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertBill(bill: BillEntity): Long

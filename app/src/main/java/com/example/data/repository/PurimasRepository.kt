@@ -25,6 +25,7 @@ class PurimasRepository(private val db: PurimasDatabase) {
     val residentsFlow: Flow<List<ResidentEntity>> = db.residentDao().getAllResidents()
     val billsFlow: Flow<List<BillEntity>> = db.billDao().getAllBills()
     val overdueBillsFlow: Flow<List<BillEntity>> = db.billDao().getOverdueBills()
+    val distinctMonthsFlow: Flow<List<String>> = db.billDao().getDistinctMonths()
     val cashTransactionsFlow: Flow<List<CashTransactionEntity>> = db.cashDao().getAllTransactions()
     val bookingsFlow: Flow<List<FacilityBookingEntity>> = db.bookingDao().getAllBookings()
     val forumPostsFlow: Flow<List<DiscussionPostEntity>> = db.forumDao().getAllPosts()
@@ -163,9 +164,10 @@ class PurimasRepository(private val db: PurimasDatabase) {
         )
         db.residentDao().insertAll(initialResidents)
 
-        // 2. Seed Tagihan Iuran Warga (Bulan November 2026 - Rp 140.000)
-        // Sebagian lunas, sebagian menunggak untuk simulasi real-time dashboard
+        // 2. Seed Tagihan Iuran Warga Multi-Bulan (November, Oktober, September 2026 - Rp 140.000)
+        // Menampilkan status pembayaran warga tiap bulan (Lunas & Menunggak) secara transparan
         val initialBills = listOf(
+            // === BULAN NOVEMBER 2026 (Bulan Berjalan) ===
             BillEntity(
                 residentId = 1,
                 residentName = "Bpk. Hendra Gunawan",
@@ -178,22 +180,6 @@ class PurimasRepository(private val db: PurimasDatabase) {
                 dueDate = "25 November 2026",
                 vaNumber = "880130001001",
                 bankName = "BCA Virtual Account"
-            ),
-            BillEntity(
-                residentId = 1,
-                residentName = "Bpk. Hendra Gunawan",
-                houseUnit = "Blok A No. 01",
-                monthName = "Oktober 2026",
-                monthIndex = 10,
-                year = 2026,
-                amount = 140000L,
-                status = "LUNAS",
-                dueDate = "25 Oktober 2026",
-                vaNumber = "880130001001",
-                bankName = "BCA Virtual Account",
-                paidAt = "2026-10-22 14:32 WIB",
-                transactionRef = "TRX-BCA-992819",
-                paymentChannel = "Virtual Account"
             ),
             BillEntity(
                 residentId = 2,
@@ -209,7 +195,7 @@ class PurimasRepository(private val db: PurimasDatabase) {
                 bankName = "Mandiri Virtual Account",
                 paidAt = "2026-11-02 09:15 WIB",
                 transactionRef = "TRX-MDR-448102",
-                paymentChannel = "Virtual Account"
+                paymentChannel = "Virtual Account Mandiri"
             ),
             BillEntity(
                 residentId = 3,
@@ -225,7 +211,7 @@ class PurimasRepository(private val db: PurimasDatabase) {
                 bankName = "BRI Virtual Account",
                 paidAt = "2026-11-03 11:40 WIB",
                 transactionRef = "TRX-BRI-771923",
-                paymentChannel = "Virtual Account"
+                paymentChannel = "Virtual Account BRI"
             ),
             BillEntity(
                 residentId = 4,
@@ -241,7 +227,7 @@ class PurimasRepository(private val db: PurimasDatabase) {
                 bankName = "BCA Virtual Account",
                 paidAt = "2026-11-04 16:20 WIB",
                 transactionRef = "TRX-BCA-102934",
-                paymentChannel = "Virtual Account"
+                paymentChannel = "Virtual Account BCA"
             ),
             BillEntity(
                 residentId = 5,
@@ -283,7 +269,7 @@ class PurimasRepository(private val db: PurimasDatabase) {
                 bankName = "Mandiri Virtual Account",
                 paidAt = "2026-11-05 08:50 WIB",
                 transactionRef = "TRX-MDR-992384",
-                paymentChannel = "Virtual Account"
+                paymentChannel = "Virtual Account Mandiri"
             ),
             BillEntity(
                 residentId = 8,
@@ -312,7 +298,7 @@ class PurimasRepository(private val db: PurimasDatabase) {
                 bankName = "BRI Virtual Account",
                 paidAt = "2026-11-01 10:12 WIB",
                 transactionRef = "TRX-BRI-384729",
-                paymentChannel = "Virtual Account"
+                paymentChannel = "Virtual Account BRI"
             ),
             BillEntity(
                 residentId = 10,
@@ -324,6 +310,321 @@ class PurimasRepository(private val db: PurimasDatabase) {
                 amount = 140000L,
                 status = "MENUNGGAK",
                 dueDate = "25 November 2026",
+                vaNumber = "880130010015",
+                bankName = "BCA Virtual Account"
+            ),
+
+            // === BULAN OKTOBER 2026 ===
+            BillEntity(
+                residentId = 1,
+                residentName = "Bpk. Hendra Gunawan",
+                houseUnit = "Blok A No. 01",
+                monthName = "Oktober 2026",
+                monthIndex = 10,
+                year = 2026,
+                amount = 140000L,
+                status = "LUNAS",
+                dueDate = "25 Oktober 2026",
+                vaNumber = "880130001001",
+                bankName = "BCA Virtual Account",
+                paidAt = "2026-10-22 14:32 WIB",
+                transactionRef = "TRX-BCA-992819",
+                paymentChannel = "Virtual Account BCA"
+            ),
+            BillEntity(
+                residentId = 2,
+                residentName = "Bpk. Bambang Sulistyo",
+                houseUnit = "Blok A No. 05",
+                monthName = "Oktober 2026",
+                monthIndex = 10,
+                year = 2026,
+                amount = 140000L,
+                status = "LUNAS",
+                dueDate = "25 Oktober 2026",
+                vaNumber = "880130002005",
+                bankName = "Mandiri Virtual Account",
+                paidAt = "2026-10-05 10:11 WIB",
+                transactionRef = "TRX-MDR-441209",
+                paymentChannel = "Virtual Account Mandiri"
+            ),
+            BillEntity(
+                residentId = 3,
+                residentName = "Ibu Siti Rahmawati",
+                houseUnit = "Blok B No. 03",
+                monthName = "Oktober 2026",
+                monthIndex = 10,
+                year = 2026,
+                amount = 140000L,
+                status = "LUNAS",
+                dueDate = "25 Oktober 2026",
+                vaNumber = "880130003003",
+                bankName = "BRI Virtual Account",
+                paidAt = "2026-10-02 11:20 WIB",
+                transactionRef = "TRX-BRI-771120",
+                paymentChannel = "Virtual Account BRI"
+            ),
+            BillEntity(
+                residentId = 4,
+                residentName = "Bpk. Ahmad Fauzan",
+                houseUnit = "Blok B No. 12",
+                monthName = "Oktober 2026",
+                monthIndex = 10,
+                year = 2026,
+                amount = 140000L,
+                status = "LUNAS",
+                dueDate = "25 Oktober 2026",
+                vaNumber = "880130004012",
+                bankName = "BCA Virtual Account",
+                paidAt = "2026-10-04 15:30 WIB",
+                transactionRef = "TRX-BCA-102110",
+                paymentChannel = "Virtual Account BCA"
+            ),
+            BillEntity(
+                residentId = 5,
+                residentName = "Bpk. Denny Hermawan",
+                houseUnit = "Blok B No. 14",
+                monthName = "Oktober 2026",
+                monthIndex = 10,
+                year = 2026,
+                amount = 140000L,
+                status = "MENUNGGAK",
+                dueDate = "25 Oktober 2026",
+                vaNumber = "880130005014",
+                bankName = "BCA Virtual Account"
+            ),
+            BillEntity(
+                residentId = 6,
+                residentName = "Ibu Maya Kartika",
+                houseUnit = "Blok C No. 02",
+                monthName = "Oktober 2026",
+                monthIndex = 10,
+                year = 2026,
+                amount = 140000L,
+                status = "LUNAS",
+                dueDate = "25 Oktober 2026",
+                vaNumber = "880130006002",
+                bankName = "BNI Virtual Account",
+                paidAt = "2026-10-20 09:40 WIB",
+                transactionRef = "TRX-BNI-661920",
+                paymentChannel = "Virtual Account BNI"
+            ),
+            BillEntity(
+                residentId = 7,
+                residentName = "Bpk. Rian Pratama",
+                houseUnit = "Blok C No. 08",
+                monthName = "Oktober 2026",
+                monthIndex = 10,
+                year = 2026,
+                amount = 140000L,
+                status = "LUNAS",
+                dueDate = "25 Oktober 2026",
+                vaNumber = "880130007008",
+                bankName = "Mandiri Virtual Account",
+                paidAt = "2026-10-06 14:15 WIB",
+                transactionRef = "TRX-MDR-992100",
+                paymentChannel = "Virtual Account Mandiri"
+            ),
+            BillEntity(
+                residentId = 8,
+                residentName = "Bpk. Gunawan Wibisono",
+                houseUnit = "Blok D No. 04",
+                monthName = "Oktober 2026",
+                monthIndex = 10,
+                year = 2026,
+                amount = 140000L,
+                status = "LUNAS",
+                dueDate = "25 Oktober 2026",
+                vaNumber = "880130008004",
+                bankName = "BCA Virtual Account",
+                paidAt = "2026-10-18 16:50 WIB",
+                transactionRef = "TRX-BCA-881290",
+                paymentChannel = "Virtual Account BCA"
+            ),
+            BillEntity(
+                residentId = 9,
+                residentName = "Ibu Linda Kusuma",
+                houseUnit = "Blok D No. 11",
+                monthName = "Oktober 2026",
+                monthIndex = 10,
+                year = 2026,
+                amount = 140000L,
+                status = "LUNAS",
+                dueDate = "25 Oktober 2026",
+                vaNumber = "880130009011",
+                bankName = "BRI Virtual Account",
+                paidAt = "2026-10-03 08:30 WIB",
+                transactionRef = "TRX-BRI-384110",
+                paymentChannel = "Virtual Account BRI"
+            ),
+            BillEntity(
+                residentId = 10,
+                residentName = "Bpk. Eko Prasetyo",
+                houseUnit = "Blok D No. 15",
+                monthName = "Oktober 2026",
+                monthIndex = 10,
+                year = 2026,
+                amount = 140000L,
+                status = "MENUNGGAK",
+                dueDate = "25 Oktober 2026",
+                vaNumber = "880130010015",
+                bankName = "BCA Virtual Account"
+            ),
+
+            // === BULAN SEPTEMBER 2026 ===
+            BillEntity(
+                residentId = 1,
+                residentName = "Bpk. Hendra Gunawan",
+                houseUnit = "Blok A No. 01",
+                monthName = "September 2026",
+                monthIndex = 9,
+                year = 2026,
+                amount = 140000L,
+                status = "LUNAS",
+                dueDate = "25 September 2026",
+                vaNumber = "880130001001",
+                bankName = "BCA Virtual Account",
+                paidAt = "2026-09-20 13:10 WIB",
+                transactionRef = "TRX-BCA-991820",
+                paymentChannel = "Virtual Account BCA"
+            ),
+            BillEntity(
+                residentId = 2,
+                residentName = "Bpk. Bambang Sulistyo",
+                houseUnit = "Blok A No. 05",
+                monthName = "September 2026",
+                monthIndex = 9,
+                year = 2026,
+                amount = 140000L,
+                status = "LUNAS",
+                dueDate = "25 September 2026",
+                vaNumber = "880130002005",
+                bankName = "Mandiri Virtual Account",
+                paidAt = "2026-09-04 09:20 WIB",
+                transactionRef = "TRX-MDR-440918",
+                paymentChannel = "Virtual Account Mandiri"
+            ),
+            BillEntity(
+                residentId = 3,
+                residentName = "Ibu Siti Rahmawati",
+                houseUnit = "Blok B No. 03",
+                monthName = "September 2026",
+                monthIndex = 9,
+                year = 2026,
+                amount = 140000L,
+                status = "LUNAS",
+                dueDate = "25 September 2026",
+                vaNumber = "880130003003",
+                bankName = "BRI Virtual Account",
+                paidAt = "2026-09-02 10:45 WIB",
+                transactionRef = "TRX-BRI-770912",
+                paymentChannel = "Virtual Account BRI"
+            ),
+            BillEntity(
+                residentId = 4,
+                residentName = "Bpk. Ahmad Fauzan",
+                houseUnit = "Blok B No. 12",
+                monthName = "September 2026",
+                monthIndex = 9,
+                year = 2026,
+                amount = 140000L,
+                status = "LUNAS",
+                dueDate = "25 September 2026",
+                vaNumber = "880130004012",
+                bankName = "BCA Virtual Account",
+                paidAt = "2026-09-03 16:15 WIB",
+                transactionRef = "TRX-BCA-100934",
+                paymentChannel = "Virtual Account BCA"
+            ),
+            BillEntity(
+                residentId = 5,
+                residentName = "Bpk. Denny Hermawan",
+                houseUnit = "Blok B No. 14",
+                monthName = "September 2026",
+                monthIndex = 9,
+                year = 2026,
+                amount = 140000L,
+                status = "LUNAS",
+                dueDate = "25 September 2026",
+                vaNumber = "880130005014",
+                bankName = "BCA Virtual Account",
+                paidAt = "2026-09-24 19:30 WIB",
+                transactionRef = "TUNAI-RT13-092401",
+                paymentChannel = "Tunai Diterima Bendahara"
+            ),
+            BillEntity(
+                residentId = 6,
+                residentName = "Ibu Maya Kartika",
+                houseUnit = "Blok C No. 02",
+                monthName = "September 2026",
+                monthIndex = 9,
+                year = 2026,
+                amount = 140000L,
+                status = "LUNAS",
+                dueDate = "25 September 2026",
+                vaNumber = "880130006002",
+                bankName = "BNI Virtual Account",
+                paidAt = "2026-09-15 11:25 WIB",
+                transactionRef = "TRX-BNI-660915",
+                paymentChannel = "Virtual Account BNI"
+            ),
+            BillEntity(
+                residentId = 7,
+                residentName = "Bpk. Rian Pratama",
+                houseUnit = "Blok C No. 08",
+                monthName = "September 2026",
+                monthIndex = 9,
+                year = 2026,
+                amount = 140000L,
+                status = "LUNAS",
+                dueDate = "25 September 2026",
+                vaNumber = "880130007008",
+                bankName = "Mandiri Virtual Account",
+                paidAt = "2026-09-05 08:40 WIB",
+                transactionRef = "TRX-MDR-990905",
+                paymentChannel = "Virtual Account Mandiri"
+            ),
+            BillEntity(
+                residentId = 8,
+                residentName = "Bpk. Gunawan Wibisono",
+                houseUnit = "Blok D No. 04",
+                monthName = "September 2026",
+                monthIndex = 9,
+                year = 2026,
+                amount = 140000L,
+                status = "LUNAS",
+                dueDate = "25 September 2026",
+                vaNumber = "880130008004",
+                bankName = "BCA Virtual Account",
+                paidAt = "2026-09-21 14:10 WIB",
+                transactionRef = "TRX-BCA-880921",
+                paymentChannel = "Virtual Account BCA"
+            ),
+            BillEntity(
+                residentId = 9,
+                residentName = "Ibu Linda Kusuma",
+                houseUnit = "Blok D No. 11",
+                monthName = "September 2026",
+                monthIndex = 9,
+                year = 2026,
+                amount = 140000L,
+                status = "LUNAS",
+                dueDate = "25 September 2026",
+                vaNumber = "880130009011",
+                bankName = "BRI Virtual Account",
+                paidAt = "2026-09-01 10:00 WIB",
+                transactionRef = "TRX-BRI-380901",
+                paymentChannel = "Virtual Account BRI"
+            ),
+            BillEntity(
+                residentId = 10,
+                residentName = "Bpk. Eko Prasetyo",
+                houseUnit = "Blok D No. 15",
+                monthName = "September 2026",
+                monthIndex = 9,
+                year = 2026,
+                amount = 140000L,
+                status = "MENUNGGAK",
+                dueDate = "25 September 2026",
                 vaNumber = "880130010015",
                 bankName = "BCA Virtual Account"
             )
@@ -917,6 +1218,42 @@ class PurimasRepository(private val db: PurimasDatabase) {
     }
 
     /**
+     * Pengurus RT Membuat Tagihan Iuran untuk Bulan Baru (Semua Warga Aktif)
+     */
+    suspend fun generateBillsForNewMonth(
+        monthName: String,
+        monthIndex: Int,
+        year: Int,
+        dueDate: String = "25"
+    ): Int = withContext(Dispatchers.IO) {
+        val allResidents = db.residentDao().getResidentList()
+        val existingBills = db.billDao().getBillsByMonthDirect(monthName)
+        val existingResidentIds = existingBills.map { it.residentId }.toSet()
+
+        val newBills = allResidents.filter { it.id !in existingResidentIds }.map { res ->
+            val vaSuffix = (100 + res.id).toString()
+            BillEntity(
+                residentId = res.id,
+                residentName = res.fullName,
+                houseUnit = "${res.blockNumber} No. ${res.houseNumber}",
+                monthName = monthName,
+                monthIndex = monthIndex,
+                year = year,
+                amount = 140000L,
+                status = "MENUNGGAK",
+                dueDate = "$dueDate $monthName",
+                vaNumber = "88013000$vaSuffix",
+                bankName = "BCA Virtual Account"
+            )
+        }
+
+        if (newBills.isNotEmpty()) {
+            db.billDao().insertAll(newBills)
+        }
+        newBills.size
+    }
+
+    /**
      * Template Pesan Pengingat WhatsApp Tanggal 25
      */
     companion object {
@@ -946,6 +1283,55 @@ class PurimasRepository(private val db: PurimasDatabase) {
                 
                 _Hormat kami,_
                 *Pengurus RT 013 RW 003 Purimas Tirtajaya*
+            """.trimIndent()
+        }
+
+        fun buildMonthlyRecapSummary(monthName: String, bills: List<BillEntity>): String {
+            val totalBills = bills.size
+            val paidBills = bills.filter { it.status == "LUNAS" }
+            val overdueBills = bills.filter { it.status != "LUNAS" }
+            val totalTarget = totalBills * 140000L
+            val totalCollected = paidBills.size * 140000L
+            val totalPending = overdueBills.size * 140000L
+            val percentage = if (totalBills > 0) (paidBills.size * 100) / totalBills else 0
+
+            val paidListText = if (paidBills.isNotEmpty()) {
+                paidBills.joinToString("\n") { "  ✅ ${it.houseUnit} - ${it.residentName} (${it.paymentChannel ?: "Lunas"})" }
+            } else {
+                "  (Belum ada data pembayaran)"
+            }
+
+            val overdueListText = if (overdueBills.isNotEmpty()) {
+                overdueBills.joinToString("\n") { "  ⏳ ${it.houseUnit} - ${it.residentName} (Menunggak ${formatRupiah(it.amount)})" }
+            } else {
+                "  🎉 Seluruh warga telah lunas 100%!"
+            }
+
+            return """
+                📊 *LAPORAN REKAPITULASI IURAN WARGA RT 013 RW 003*
+                🏡 *PERUMAHAN PURIMAS TIRTAJAYA - KOTA DEPOK*
+                📅 *Periode: $monthName*
+                
+                📈 *Ringkasan Ketercapaian:*
+                • Total Warga Terdaftar : $totalBills Rumah
+                • Sudah Lunas           : ${paidBills.size} Rumah ($percentage%)
+                • Belum Lunas / Nunggak : ${overdueBills.size} Rumah
+                • Total Target Iuran    : ${formatRupiah(totalTarget)}
+                • Total Dana Terkumpul  : ${formatRupiah(totalCollected)}
+                • Sisa Tunggakan        : ${formatRupiah(totalPending)}
+                
+                ━━━━━━━━━━━━━━━━━━━━━
+                ✅ *DAFTAR WARGA LUNAS (${paidBills.size} Rumah):*
+                $paidListText
+                
+                ━━━━━━━━━━━━━━━━━━━━━
+                ⏳ *DAFTAR WARGA BELUM LUNAS (${overdueBills.size} Rumah):*
+                $overdueListText
+                
+                ━━━━━━━━━━━━━━━━━━━━━
+                _Iuran bulanan Rp 140.000 dialokasikan untuk: Keamanan 24 Jam, Truk Sampah DLHK, dan Kas Pemeliharaan Lingkungan/PJU._
+                
+                _Diterbitkan secara transparan oleh Pengurus RT 013 RW 003 Purimas Tirtajaya_
             """.trimIndent()
         }
 

@@ -62,6 +62,36 @@ class PurimasViewModel(application: Application) : AndroidViewModel(application)
     val overdueBills: StateFlow<List<BillEntity>> = repository.overdueBillsFlow
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
+    val distinctMonths: StateFlow<List<String>> = repository.distinctMonthsFlow
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), listOf("November 2026", "Oktober 2026", "September 2026"))
+
+    val selectedAdminMonth = MutableStateFlow("November 2026")
+    val selectedDuesStatusFilter = MutableStateFlow("SEMUA") // "SEMUA", "LUNAS", "MENUNGGAK"
+    val searchDuesQuery = MutableStateFlow("")
+    val adminDuesViewMode = MutableStateFlow("DAFTAR") // "DAFTAR", "MATRIKS"
+
+    val showGenerateMonthModal = MutableStateFlow(false)
+    val showMonthlyRecapModal = MutableStateFlow(false)
+
+    // Filtered bills for the chosen month in admin screen
+    val adminMonthlyBills: StateFlow<List<BillEntity>> = combine(
+        allBills,
+        selectedAdminMonth,
+        selectedDuesStatusFilter,
+        searchDuesQuery
+    ) { bills, month, statusFilter, query ->
+        bills.filter { bill ->
+            (month == "Semua Bulan" || bill.monthName == month) &&
+            (statusFilter == "SEMUA" || bill.status == statusFilter) &&
+            (query.isBlank() || bill.residentName.contains(query, ignoreCase = true) || bill.houseUnit.contains(query, ignoreCase = true))
+        }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
+    // All bills for selected month (used for statistics & shareable recap)
+    val currentMonthAllBills: StateFlow<List<BillEntity>> = combine(allBills, selectedAdminMonth) { bills, month ->
+        if (month == "Semua Bulan") bills else bills.filter { it.monthName == month }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
     val cashTransactions: StateFlow<List<CashTransactionEntity>> = repository.cashTransactionsFlow
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
@@ -289,6 +319,37 @@ class PurimasViewModel(application: Application) : AndroidViewModel(application)
             showBroadcastModal.value = false
             userNoticeMessage.value = "Pengumuman berhasil disebarkan ke seluruh warga."
         }
+    }
+
+    fun selectAdminMonth(month: String) {
+        selectedAdminMonth.value = month
+    }
+
+    fun setDuesStatusFilter(filter: String) {
+        selectedDuesStatusFilter.value = filter
+    }
+
+    fun setSearchDuesQuery(query: String) {
+        searchDuesQuery.value = query
+    }
+
+    fun setAdminDuesViewMode(mode: String) {
+        adminDuesViewMode.value = mode
+    }
+
+    fun generateNewMonthBills(monthName: String, monthIndex: Int, year: Int) {
+        viewModelScope.launch {
+            val count = repository.generateBillsForNewMonth(monthName, monthIndex, year)
+            showGenerateMonthModal.value = false
+            selectedAdminMonth.value = monthName
+            userNoticeMessage.value = "Berhasil membuat $count tagihan iuran baru untuk bulan $monthName"
+        }
+    }
+
+    fun getShareableRecapText(): String {
+        val month = selectedAdminMonth.value
+        val bills = currentMonthAllBills.value
+        return PurimasRepository.buildMonthlyRecapSummary(month, bills)
     }
 
     fun dismissNotice() {

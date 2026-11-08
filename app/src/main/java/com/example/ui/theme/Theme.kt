@@ -17,15 +17,15 @@ import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
 private val DarkColorScheme = darkColorScheme(
-    primary = DarkOrangePrimary,
-    onPrimary = Color(0xFF431407),
-    primaryContainer = Color(0xFF7C2D12),
-    onPrimaryContainer = Color(0xFFFFEDD5),
-    secondary = AmberSecondary,
+    primary = DarkPosterBluePrimary,
+    onPrimary = Color(0xFF002255),
+    primaryContainer = Color(0xFF003882),
+    onPrimaryContainer = Color(0xFFE0EDFF),
+    secondary = PosterYellowBadge,
     onSecondary = Color(0xFF451A03),
     secondaryContainer = Color(0xFF78350F),
     onSecondaryContainer = Color(0xFFFEF3C7),
-    tertiary = CoralTertiary,
+    tertiary = PosterTerracottaWall,
     onTertiary = Color.White,
     background = DarkBackground,
     onBackground = DarkTextPrimary,
@@ -33,37 +33,37 @@ private val DarkColorScheme = darkColorScheme(
     onSurface = DarkTextPrimary,
     surfaceVariant = DarkSurfaceVariant,
     onSurfaceVariant = DarkTextSecondary,
-    outline = Color(0xFF573E31),
+    outline = Color(0xFF2E4068),
     error = Color(0xFFF87171)
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = OrangePrimary,
+    primary = PosterBluePrimary,
     onPrimary = Color.White,
-    primaryContainer = OrangeContainer,
-    onPrimaryContainer = OnOrangeContainer,
-    secondary = AmberSecondary,
-    onSecondary = Color.White,
-    secondaryContainer = AmberContainer,
-    onSecondaryContainer = OnAmberContainer,
-    tertiary = CoralTertiary,
+    primaryContainer = PosterBlueContainer,
+    onPrimaryContainer = OnPosterBlueContainer,
+    secondary = PosterYellowBadge,
+    onSecondary = Color(0xFF1C1917),
+    secondaryContainer = PosterYellowContainer,
+    onSecondaryContainer = OnPosterYellowContainer,
+    tertiary = PosterTerracottaWall,
     onTertiary = Color.White,
-    tertiaryContainer = CoralContainer,
-    onTertiaryContainer = OnCoralContainer,
-    background = WarmBackground,
+    tertiaryContainer = PosterTerracottaContainer,
+    onTertiaryContainer = Color(0xFF7C2D12),
+    background = PosterBackground,
     onBackground = TextPrimary,
-    surface = WarmSurface,
+    surface = PosterSurface,
     onSurface = TextPrimary,
-    surfaceVariant = WarmSurfaceVariant,
+    surfaceVariant = PosterSurfaceVariant,
     onSurfaceVariant = TextSecondary,
-    outline = WarmOutline,
+    outline = PosterOutline,
     error = StatusDanger
 )
 
 @Composable
 fun MyApplicationTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    dynamicColor: Boolean = false, // Keep false to preserve Purimas orange brand identity
+    dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {

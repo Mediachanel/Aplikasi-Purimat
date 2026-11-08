@@ -24,7 +24,7 @@ import com.example.data.model.ResidentEntity
         AnnouncementEntity::class,
         DocumentArchiveEntity::class
     ],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 abstract class PurimasDatabase : RoomDatabase() {
