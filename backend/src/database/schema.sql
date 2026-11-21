@@ -136,3 +136,142 @@ CREATE INDEX IF NOT EXISTS idx_cash_type ON cash_transactions(type);
 CREATE INDEX IF NOT EXISTS idx_cash_date ON cash_transactions(date);
 CREATE INDEX IF NOT EXISTS idx_bookings_date ON facility_bookings(date);
 CREATE INDEX IF NOT EXISTS idx_forum_comments_post_id ON forum_comments(post_id);
+
+-- Purimas portal: real households, review workflow and private identity files.
+ALTER TABLE residents ALTER COLUMN phone_number DROP NOT NULL;
+ALTER TABLE residents ADD COLUMN IF NOT EXISTS nik VARCHAR(16) DEFAULT '';
+ALTER TABLE residents ADD COLUMN IF NOT EXISTS revision INTEGER NOT NULL DEFAULT 0;
+ALTER TABLE users ADD COLUMN IF NOT EXISTS must_change_password BOOLEAN NOT NULL DEFAULT TRUE;
+CREATE TABLE IF NOT EXISTS portal_settings (
+  key TEXT PRIMARY KEY,
+  value JSONB NOT NULL
+);
+CREATE TABLE IF NOT EXISTS family_members (
+  id UUID PRIMARY KEY,
+  resident_id INTEGER NOT NULL REFERENCES residents(id) ON DELETE CASCADE,
+  full_name VARCHAR(150) NOT NULL,
+  nik VARCHAR(16) NOT NULL DEFAULT '',
+  relationship VARCHAR(50) NOT NULL,
+  gender VARCHAR(30) NOT NULL DEFAULT '',
+  birth_place VARCHAR(100) NOT NULL DEFAULT '',
+  birth_date DATE,
+  occupation VARCHAR(100) NOT NULL DEFAULT ''
+);
+CREATE TABLE IF NOT EXISTS vehicles (
+  id UUID PRIMARY KEY,
+  resident_id INTEGER NOT NULL REFERENCES residents(id) ON DELETE CASCADE,
+  plate_number VARCHAR(20) NOT NULL,
+  vehicle_type VARCHAR(50) NOT NULL,
+  brand VARCHAR(100) NOT NULL DEFAULT '',
+  color VARCHAR(50) NOT NULL DEFAULT ''
+);
+CREATE TABLE IF NOT EXISTS private_attachments (
+  id UUID PRIMARY KEY,
+  resident_id INTEGER NOT NULL REFERENCES residents(id) ON DELETE CASCADE,
+  uploaded_by INTEGER NOT NULL REFERENCES users(id),
+  kind VARCHAR(10) NOT NULL CHECK (kind IN ('KTP','KK')),
+  member_ref UUID,
+  original_name VARCHAR(200) NOT NULL,
+  storage_name TEXT NOT NULL UNIQUE,
+  mime_type VARCHAR(60) NOT NULL,
+  size_bytes INTEGER NOT NULL CHECK (size_bytes > 0 AND size_bytes <= 8388608),
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+CREATE TABLE IF NOT EXISTS submissions (
+  id BIGSERIAL PRIMARY KEY,
+  resident_id INTEGER NOT NULL REFERENCES residents(id) ON DELETE CASCADE,
+  submitted_by INTEGER NOT NULL REFERENCES users(id),
+  type VARCHAR(30) NOT NULL CHECK (type IN ('PERUBAHAN_DATA','ADMINISTRASI')),
+  title VARCHAR(200) NOT NULL,
+  payload JSONB NOT NULL,
+  base_revision INTEGER NOT NULL DEFAULT 0,
+  status VARCHAR(20) NOT NULL DEFAULT 'MENUNGGU' CHECK (status IN ('MENUNGGU','DISETUJUI','DITOLAK')),
+  reviewer_id INTEGER REFERENCES users(id),
+  review_note TEXT NOT NULL DEFAULT '',
+  reviewed_at TIMESTAMPTZ,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+CREATE UNIQUE INDEX IF NOT EXISTS one_pending_profile_change ON submissions(resident_id)
+  WHERE type = 'PERUBAHAN_DATA' AND status = 'MENUNGGU';
+CREATE TABLE IF NOT EXISTS submission_files (
+  submission_id BIGINT NOT NULL REFERENCES submissions(id) ON DELETE CASCADE,
+  attachment_id UUID NOT NULL REFERENCES private_attachments(id),
+  PRIMARY KEY(submission_id, attachment_id)
+);
+CREATE TABLE IF NOT EXISTS verified_attachments (
+  resident_id INTEGER NOT NULL REFERENCES residents(id) ON DELETE CASCADE,
+  attachment_id UUID NOT NULL REFERENCES private_attachments(id),
+  PRIMARY KEY(resident_id, attachment_id)
+);
+CREATE TABLE IF NOT EXISTS audit_events (
+  id BIGSERIAL PRIMARY KEY,
+  actor_id INTEGER REFERENCES users(id),
+  action VARCHAR(80) NOT NULL,
+  entity_type VARCHAR(50) NOT NULL,
+  entity_id TEXT NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+CREATE INDEX IF NOT EXISTS idx_submissions_resident ON submissions(resident_id, status);
+CREATE INDEX IF NOT EXISTS idx_attachments_resident ON private_attachments(resident_id);
+ALTER TABLE cash_transactions ADD COLUMN IF NOT EXISTS bill_id INTEGER REFERENCES bills(id);
+CREATE UNIQUE INDEX IF NOT EXISTS one_cash_entry_per_bill ON cash_transactions(bill_id) WHERE bill_id IS NOT NULL;
+CREATE UNIQUE INDEX IF NOT EXISTS unique_monthly_bill ON bills(resident_id,year,month_index);
+ALTER TABLE users ADD COLUMN IF NOT EXISTS session_version INTEGER NOT NULL DEFAULT 0;
+ALTER TABLE documents ADD COLUMN IF NOT EXISTS resident_id INTEGER REFERENCES residents(id);
+ALTER TABLE documents ADD COLUMN IF NOT EXISTS submission_id BIGINT REFERENCES submissions(id);
+ALTER TABLE bills ADD COLUMN IF NOT EXISTS source_report VARCHAR(200);
+CREATE UNIQUE INDEX IF NOT EXISTS one_account_per_household ON users(resident_id) WHERE resident_id IS NOT NULL;
+ALTER TABLE bills ALTER COLUMN due_date DROP DEFAULT;
+
+-- Citizen payment confirmations; only the treasurer can post the resulting cash.
+ALTER TABLE private_attachments DROP CONSTRAINT IF EXISTS private_attachments_kind_check;
+ALTER TABLE private_attachments ADD CONSTRAINT private_attachments_kind_check CHECK(kind IN ('KTP','KK','BUKTI','KAS'));
+CREATE TABLE IF NOT EXISTS payment_requests (
+  id BIGSERIAL PRIMARY KEY,
+  resident_id INTEGER NOT NULL REFERENCES residents(id),
+  submitted_by INTEGER NOT NULL REFERENCES users(id),
+  amount BIGINT NOT NULL CHECK(amount>0),
+  channel VARCHAR(20) NOT NULL CHECK(channel IN ('TRANSFER','TUNAI')),
+  paid_date DATE NOT NULL,
+  reference VARCHAR(100) NOT NULL DEFAULT '',
+  attachment_id UUID REFERENCES private_attachments(id),
+  status VARCHAR(20) NOT NULL DEFAULT 'MENUNGGU' CHECK(status IN ('MENUNGGU','DISETUJUI','DITOLAK')),
+  note TEXT NOT NULL DEFAULT '',
+  reviewed_by INTEGER REFERENCES users(id),
+  reviewed_at TIMESTAMPTZ,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+CREATE TABLE IF NOT EXISTS payment_request_items (
+  payment_request_id BIGINT NOT NULL REFERENCES payment_requests(id),
+  bill_id INTEGER NOT NULL REFERENCES bills(id),
+  active BOOLEAN NOT NULL DEFAULT TRUE,
+  PRIMARY KEY(payment_request_id,bill_id)
+);
+CREATE UNIQUE INDEX IF NOT EXISTS one_pending_payment_per_bill ON payment_request_items(bill_id) WHERE active;
+CREATE INDEX IF NOT EXISTS idx_payment_requests_resident ON payment_requests(resident_id,status);
+
+-- Data tambahan pada kartu keluarga; data lama tetap tersedia.
+ALTER TABLE residents ADD COLUMN IF NOT EXISTS kk_number VARCHAR(16) NOT NULL DEFAULT '';
+ALTER TABLE family_members ADD COLUMN IF NOT EXISTS kk_details JSONB NOT NULL DEFAULT '{}'::jsonb;
+ALTER TABLE residents ADD COLUMN IF NOT EXISTS kk_address JSONB NOT NULL DEFAULT '{}'::jsonb;
+
+-- Persistent account-level login throttling; only a one-way username digest is stored.
+CREATE TABLE IF NOT EXISTS security_login_attempts (
+    account_digest CHAR(64) PRIMARY KEY,
+    attempts INTEGER NOT NULL,
+    window_until TIMESTAMPTZ NOT NULL,
+    locked_until TIMESTAMPTZ
+);
+CREATE INDEX IF NOT EXISTS security_login_attempts_expiry ON security_login_attempts(window_until);
+
+-- Tanggal penerbitan KK; kosong jika belum diketahui.
+ALTER TABLE residents ADD COLUMN IF NOT EXISTS kk_issue_date DATE;
+
+-- Preserve the submitted comparison baseline and link corrected submissions.
+ALTER TABLE submissions ADD COLUMN IF NOT EXISTS base_profile JSONB;
+ALTER TABLE submissions ADD COLUMN IF NOT EXISTS retry_of BIGINT REFERENCES submissions(id);
+CREATE INDEX IF NOT EXISTS idx_submissions_retry_of ON submissions(retry_of);
+
+-- Private evidence for non-dues cash movements; historical entries remain valid.
+ALTER TABLE cash_transactions ADD COLUMN IF NOT EXISTS attachment_id UUID REFERENCES private_attachments(id);
+CREATE UNIQUE INDEX IF NOT EXISTS one_cash_transaction_per_proof ON cash_transactions(attachment_id) WHERE attachment_id IS NOT NULL;

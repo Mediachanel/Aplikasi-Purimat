@@ -1,0 +1,20 @@
+import assert from 'node:assert/strict';
+import ExcelJS from 'exceljs';
+const base='http://127.0.0.1:8302/api/', tokens={};
+async function call(role,path,body,expected=200){const r=await fetch(base+path,{method:body===undefined?'GET':'POST',headers:{'Content-Type':'application/json',...(tokens[role]?{Authorization:'Bearer '+tokens[role]}:{})},...(body===undefined?{}:{body:JSON.stringify(body)})});const d=await r.json();assert.equal(r.status,expected,`${path}: ${JSON.stringify(d)}`);return d.data??d;}
+for (const [role,username] of Object.entries({treasurer:'blok_b1',chair:'blok_a8',citizen:'blok_a1',secretary:'blok_a10'})) tokens[role]=(await call(null,'auth/login',{username,password:'purimas'})).token;
+const old=await call('chair','reports/cash?from=2026-01-01&to=2026-12-31');assert.equal(old.summary.closing,5767473);
+const original=(await call('citizen','bills')).filter(b=>b.year===2026);assert.equal(original.length,12);
+await call('citizen','bills/generate-year',{year:2027,amount:150000},403);
+await call('chair','bills/generate-year',{year:2027,amount:150000},403);
+await call('treasurer','bills/generate-year',{year:2201,amount:150000},400);
+assert.equal((await call('treasurer','bills/generate-monthly',{year:2027,monthIndex:1,amount:125000})).generatedCount,24);
+assert.equal((await call('treasurer','bills/generate-year',{year:2027,amount:150000})).generatedCount,264);
+assert.equal((await call('treasurer','bills/generate-year',{year:2027,amount:150000})).generatedCount,0);
+const bills=await call('citizen','bills');assert.equal(bills.filter(b=>b.year===2026).length,12);const next=bills.filter(b=>b.year===2027);assert.equal(next.length,12);assert.equal(Number(next.find(b=>b.month_index===1).amount),125000);assert.equal(Number(next.find(b=>b.month_index===2).amount),150000);assert(next.every(b=>b.status==='BELUM_BAYAR'));
+let report=await call('chair','reports/cash?from=2027-01-01&to=2027-12-31');assert.deepEqual(report.summary,{opening:5767473,income:0,expense:0,closing:5767473});
+const proofResponse=await fetch(base+'attachments',{method:'POST',headers:{Authorization:'Bearer '+tokens.treasurer,'Content-Type':'application/pdf','X-File-Kind':'KAS','X-File-Name':'tahun-2027.pdf'},body:Buffer.from('%PDF-1.4\n%%EOF')});assert.equal(proofResponse.status,200);const proof=(await proofResponse.json()).data;
+await call('treasurer','cash',{type:'MASUK',category:'Uji',title:'Transaksi Uji',amount:500,date:'2027-01-05',attachmentId:proof.id,description:''});
+report=await call('chair','reports/cash?from=2027-01-01&to=2027-12-31');assert.deepEqual(report.summary,{opening:5767473,income:500,expense:0,closing:5767973});assert.equal((await call('chair','reports/cash?from=2026-01-01&to=2026-12-31')).summary.closing,5767473);
+const link=await call('chair','reports/cash/export-link',report.period);const res=await fetch('http://127.0.0.1:8302'+link.url);const workbook=new ExcelJS.Workbook();await workbook.xlsx.load(Buffer.from(await res.arrayBuffer()));const sheet=workbook.getWorksheet('Kas Purimas');assert.equal(sheet.getCell('B2').value,'2027-01-01');assert.equal(sheet.getCell('B7').value,5767973);
+console.log('PASS: annual bill generation, permissions, duplicate safety, 2026 preservation, 2027 opening balance, transactions and Excel.');

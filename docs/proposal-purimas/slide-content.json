@@ -1,0 +1,132 @@
+[
+  {
+    "title": "Purimas Digital",
+    "kicker": "PROPOSAL PENERAPAN",
+    "notes": "Proposal untuk penerapan operasional aplikasi yang sudah berjalan. Bukan klaim 24 keluarga telah melengkapi data. Angka keuangan di dalam proposal bersumber dari rekap 7 November 2026."
+  },
+  {
+    "title": "Layanan warga dan tata kelola dalam satu tempat",
+    "kicker": "01 / RINGKASAN EKSEKUTIF",
+    "notes": "Inti keputusan: menerapkan satu layanan yang sudah tersedia, menetapkan operator serta prosedur, dan melengkapi data warga secara bertahap."
+  },
+  {
+    "title": "Kebutuhan yang dijawab oleh Purimas",
+    "kicker": "02 / LATAR BELAKANG",
+    "notes": ""
+  },
+  {
+    "title": "Ruang lingkup aplikasi",
+    "kicker": "03 / SOLUSI",
+    "notes": "Ruang lingkup ini merupakan fitur yang tersedia. Tidak mencakup payment gateway otomatis atau pembayaran QRIS karena integrasi tersebut belum diterapkan."
+  },
+  {
+    "title": "24 rumah, dengan tanggung jawab yang jelas",
+    "kicker": "04 / PENGGUNA",
+    "notes": ""
+  },
+  {
+    "title": "Empat peran, empat batas kewenangan",
+    "kicker": "05 / HAK AKSES",
+    "notes": ""
+  },
+  {
+    "title": "Web dan Android mengakses data yang sama",
+    "kicker": "06 / ARSITEKTUR",
+    "notes": "Android 2.1 adalah pembungkus portal yang sama, bukan klaim aplikasi native terpisah dengan mode offline. Satu database menghindari perbedaan sumber data antara perangkat."
+  },
+  {
+    "title": "Dashboard memberi gambaran sebelum membuka rincian",
+    "kicker": "07 / DEMO PRODUK",
+    "notes": ""
+  },
+  {
+    "title": "Tetap nyaman dipakai dari layar HP",
+    "kicker": "08 / PENGALAMAN PENGGUNA",
+    "notes": ""
+  },
+  {
+    "title": "Satu profil rumah tangga yang terstruktur",
+    "kicker": "09 / DATA WARGA",
+    "notes": ""
+  },
+  {
+    "title": "Verifikasi sekretaris menjadi pintu perubahan data",
+    "kicker": "10 / ALUR ADMINISTRASI",
+    "notes": ""
+  },
+  {
+    "title": "Rekap iuran mudah dibaca per bulan",
+    "kicker": "11 / IURAN",
+    "notes": "Status belum dibayar mencakup bulan yang belum dilunasi; tidak otomatis berarti terlambat. Beberapa rumah telah membayar di muka sampai Desember."
+  },
+  {
+    "title": "Pembayaran mudah bagi warga, tetap terkendali",
+    "kicker": "12 / ALUR PEMBAYARAN",
+    "notes": ""
+  },
+  {
+    "title": "Rekening resmi penerima iuran Purimas",
+    "kicker": "13 / REKENING BENDAHARA",
+    "notes": ""
+  },
+  {
+    "title": "Konfirmasi dan bukti berada dalam satu proses",
+    "kicker": "14 / DEMO PEMBAYARAN",
+    "notes": ""
+  },
+  {
+    "title": "Dasar angka yang dapat direkonsiliasi",
+    "kicker": "15 / SNAPSHOT KEUANGAN",
+    "notes": "Total kas masuk mencakup saldo bawaan 2025 sebesar Rp4.163.976. Status iuran historis tidak menambah kas lagi saat diimpor karena penerimaannya sudah ada dalam rekap."
+  },
+  {
+    "title": "Pengeluaran terlihat menurut penggunaannya",
+    "kicker": "16 / TRANSPARANSI",
+    "notes": ""
+  },
+  {
+    "title": "Bendahara menutup periode dengan laporan yang jelas",
+    "kicker": "17 / LAPORAN DEBIT & KREDIT",
+    "notes": ""
+  },
+  {
+    "title": "Hubungan data dirancang untuk jejak yang utuh",
+    "kicker": "18 / MODEL DATA KONSEPTUAL",
+    "notes": ""
+  },
+  {
+    "title": "Privasi warga menjadi bagian dari alur kerja",
+    "kicker": "19 / KEAMANAN & KONTROL",
+    "notes": "Tidak menyatakan adanya sertifikasi keamanan, enkripsi penyimpanan penuh, atau payment gateway bank otomatis."
+  },
+  {
+    "title": "Aplikasi tersedia; adopsi operasional dilengkapi bertahap",
+    "kicker": "20 / KESIAPAN",
+    "notes": ""
+  },
+  {
+    "title": "Usulan penerapan dalam empat tahap",
+    "kicker": "21 / RENCANA ADOPSI",
+    "notes": ""
+  },
+  {
+    "title": "Keberhasilan diukur dengan indikator yang disepakati",
+    "kicker": "22 / KPI EVALUASI — USULAN",
+    "notes": ""
+  },
+  {
+    "title": "Kebutuhan operasional dan anggaran dibahas terpisah",
+    "kicker": "23 / DUKUNGAN & RISIKO",
+    "notes": "Risiko dan respons: koneksi Internet—gunakan pencatatan sementara lalu rekonsiliasi; salah verifikasi—pemeriksaan bukti dan audit; kehilangan data—cadangan database dan berkas; pergantian pengurus—serah terima akses."
+  },
+  {
+    "title": "Keputusan yang dimohonkan kepada pengurus",
+    "kicker": "24 / PENUTUP",
+    "notes": "Tidak ada komitmen biaya atau pengadaan yang dibuat melalui proposal ini. Pengurus tetap mengambil keputusan operasional."
+  },
+  {
+    "title": "Akses, sumber, dan lampiran pendukung",
+    "kicker": "25 / LAMPIRAN",
+    "notes": "Rujukan: docs/ERD.md; docs/DATA-KEUANGAN-2026.md; docs/PEMBAYARAN-DAN-LAPORAN.md; docs/VALIDASI.md. Rekening penerima telah disimpan melalui API bendahara dan dibaca kembali untuk verifikasi."
+  }
+]

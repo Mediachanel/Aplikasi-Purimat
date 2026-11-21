@@ -1,140 +1,43 @@
-# Backend REST API Server - Aplikasi RT Purimas Tirtajaya
+# Purimas RT 013 RW 003
 
-Backend server untuk Aplikasi RT Purimas Tirtajaya (RT 013 RW 003) menggunakan **Node.js**, **Express**, **TypeScript**, dan **PostgreSQL**.
+Satu aplikasi web dan API, dengan APK Android 2.1 yang menampilkan portal yang sama. Database disimpan di **Google Spreadsheet**, berkas privat (KTP, KK, bukti bayar, bukti kas) di **Google Drive**. Tidak perlu server PostgreSQL.
 
----
+- Web: https://purimas.infotamadygital.com/
+- APK: https://purimas.infotamadygital.com/download/
+- [Frontend](../docs/FRONTEND.md)
+- [Backend/API](../docs/BACKEND-API.md)
+- [ERD](../docs/ERD.md)
 
-## 🚀 Fitur Utama
+24 akun rumah: A1–A13 dan B1–B11. Ketua `blok_a8`, sekretaris `blok_b10`, bendahara `blok_b1`; lainnya warga. Password awal sesuai kesepakatan pemilik; ganti melalui pengaturan akun. Password disimpan sebagai hash bcrypt.
 
-- **Autentikasi & Otorisasi**: Login & Registrasi dengan JWT dan hashing password bcrypt (Role: `WARGA` & `PENGURUS`).
-- **Data Warga**: Manajemen direktori warga, filter blok & pencarian.
-- **Iuran & Billing**: Tagihan bulanan iuran RT (Rp 140.000/bln), pembayaran QRIS / Virtual Account, generator tagihan bulanan otomatis.
-- **Buku Kas Lingkungan**: Pencatatan kas masuk & kas keluar real-time serta kalkulasi saldo kas RT.
-- **Fasum Booking**: Pemesanan fasilitas umum (lapangan badminton, balai warga) dengan validasi anti-bentrok jadwal.
-- **Forum & Aduan Warga**: Diskusi warga, like, dan sistem komentar.
-- **Pengumuman Lingkungan**: Broadcast pengumuman dan info darurat (dengan fitur pin).
-- **Arsip Dokumen RT**: Template surat pengantar dan dokumen tata tertib RT.
+## Cara kerja database
 
----
+Server memakai PostgreSQL tertanam ([PGlite](https://pglite.dev), berjalan di dalam proses Node) sebagai mesin query, sehingga seluruh SQL di `src/portal.ts` tetap sama dengan versi PostgreSQL. Penyimpanan permanennya adalah Google Spreadsheet:
 
-## 🛠️ Persyaratan Sistem
+- Saat start, `schema.sql` dijalankan lalu isi setiap tab spreadsheet dimuat (1 tabel = 1 tab, baris 1 = nama kolom).
+- Setiap transaksi yang selesai ditulis ulang ke tab tabel yang berubah dalam satu permintaan atomik (jeda `SHEETS_FLUSH_DELAY_MS`, default 1,5 detik). `GET /api/health` menampilkan status sinkronisasi (`sync.pending`, `sync.lastSyncAt`, `sync.lastError`).
+- Edit manual di spreadsheet terdeteksi (cek tiap `SHEETS_POLL_MS`, default 30 detik) lalu dimuat ulang. Lakukan edit manual saat aplikasi sepi; jangan ubah nama tab/kolom dan jangan menambah kolom (kolom di luar skema diabaikan dan tertimpa).
+- Jalankan **satu** instance server saja.
+- Spreadsheet berisi data pribadi warga (NIK, KK, nomor HP): jangan bagikan tautannya.
 
-- Node.js v18+ (disarankan v20 atau v24)
-- PostgreSQL Server v14+ (lokal atau cloud seperti Supabase / Neon / VPS PostgreSQL)
+## Setup Google
 
----
+1. Buat Google Spreadsheet kosong dan folder Google Drive; salin ID-nya ke `.env` (`GOOGLE_SPREADSHEET_ID`, `GOOGLE_DRIVE_FOLDER_ID`).
+2. Di Google Cloud Console aktifkan **Google Sheets API** dan **Google Drive API**, buat OAuth client, isi `GOOGLE_OAUTH_CLIENT_ID`/`GOOGLE_OAUTH_CLIENT_SECRET`, lalu jalankan `npm run google:auth` (refresh token tersimpan otomatis di `.env`). Publish OAuth consent screen agar token tidak kedaluwarsa setelah 7 hari.
+3. Lihat `.env.example` untuk semua variabel. Jangan menulis kredensial di file selain `.env`.
 
-## ⚙️ Konfigurasi Lingkungan (`.env`)
+## Menjalankan
 
-Salin file `.env.example` ke `.env`:
-
-```bash
-cp .env.example .env
-```
-
-Sesuaikan parameter koneksi database PostgreSQL Anda:
-
-```env
-PORT=3000
-NODE_ENV=production
-
-JWT_SECRET=kunci-rahasia-jwt-server-acak-dan-panjang
-
-# Koneksi Database PostgreSQL
-DB_HOST=localhost
-DB_PORT=5432
-DB_NAME=purimas_db
-DB_USER=postgres
-DB_PASSWORD=password_db_anda
-DB_SSL=false
-```
-
----
-
-## 📦 Menjalankan Server & Migrasi Database
-
-### 1. Inisialisasi Skema & Data Awal (Auto-Migrate)
-Server akan secara otomatis membuat seluruh tabel saat pertama kali dijalankan jika tabel belum ada. Jika ingin menjalankan migrasi secara manual:
+Jalankan `npm ci`, `npm run build`, lalu `docker compose up -d --build` (atau `npm start`). Startup hanya membuat/memperbarui skema dan tidak mengisi data contoh. Untuk instalasi baru, sekali saja dan berurutan:
 
 ```bash
-npm run db:init
+npm run db:provision                # 24 akun rumah
+npm run db:import-2026-11-07        # laporan bendahara 07-11-2026 (288 tagihan + rekap kas)
+npm run db:import-iuran-2026-11-16  # rekap iuran 16-11-2026 (254 bulan lunas)
 ```
 
-Perintah di atas akan:
-1. Mengeksekusi `src/database/schema.sql` untuk membuat tabel-tabel dan indeks.
-2. Menginjeksi data awal `src/database/seed.sql` jika database masih kosong.
+Cadangan: unduh spreadsheet (File → Download → .xlsx) dan salin folder Drive `berkas-privat`; riwayat versi Google Sheets dapat dipakai untuk pemulihan.
 
-**Akun Default untuk Uji Coba:**
-- **Ketua RT (Pengurus)**: `username: ketua_rt` | `password: purimas123`
-- **Bendahara RT (Pengurus)**: `username: bendahara_rt` | `password: purimas123`
-- **Warga**: `username: sri_wahyuni` | `password: purimas123`
+## Pengujian
 
-### 2. Mode Pengembangan (Development)
-```bash
-npm run dev
-```
-
-### 3. Build & Jalankan Produksi
-```bash
-npm run build
-npm start
-```
-
----
-
-## 🐳 Deployment dengan Docker
-
-Jika ingin mendeploy ke server menggunakan Docker:
-
-```bash
-# Build dan jalankan container di background
-docker compose up -d --build
-```
-
----
-
-## 📡 Daftar Endpoint API
-
-### Autentikasi
-- `POST /api/auth/login` - Login pengguna (mengembalikan JWT token)
-- `POST /api/auth/register` - Registrasi warga baru
-- `GET /api/auth/me` - Ambil profil pengguna yang sedang login
-
-### Data Warga
-- `GET /api/residents` - Ambil semua warga (query: `block`, `search`)
-- `GET /api/residents/:id` - Detail warga
-- `POST /api/residents` - Tambah warga (Pengurus)
-- `PUT /api/residents/:id` - Ubah data warga (Pengurus)
-- `DELETE /api/residents/:id` - Hapus warga (Pengurus)
-
-### Tagihan & Iuran
-- `GET /api/bills` - Semua tagihan (filter: `status`, `month`, `year`)
-- `GET /api/bills/summary` - Ringkasan kas iuran (total, lunas, menunggak)
-- `GET /api/bills/resident/:residentId` - Tagihan milik warga tertentu
-- `POST /api/bills/:id/pay` - Proses pembayaran iuran (otomatis masuk buku kas)
-- `POST /api/bills/generate-monthly` - Generate tagihan massal bulanan (Pengurus)
-
-### Kas Lingkungan
-- `GET /api/cash` - Riwayat transaksi kas (filter: `type`, `category`)
-- `GET /api/cash/summary` - Ringkasan total pemasukan, pengeluaran, dan saldo kas
-- `POST /api/cash` - Catat transaksi kas (Pengurus)
-
-### Fasilitas Umum (Fasum)
-- `GET /api/facilities` - Daftar booking fasilitas
-- `POST /api/facilities` - Ajukan booking fasilitas baru
-- `PUT /api/facilities/:id/status` - Persetujuan booking (DISETUJUI / DITOLAK) (Pengurus)
-
-### Forum & Komentar
-- `GET /api/forum/posts` - Daftar postingan diskusi & aduan
-- `POST /api/forum/posts` - Buat postingan diskusi baru
-- `POST /api/forum/posts/:id/like` - Beri like pada postingan
-- `GET /api/forum/posts/:id/comments` - Ambil komentar pada postingan
-- `POST /api/forum/posts/:id/comments` - Kirim komentar
-
-### Pengumuman & Broadcast
-- `GET /api/announcements` - Daftar pengumuman (pinned diprioritaskan)
-- `POST /api/announcements` - Buat pengumuman baru (Pengurus)
-
-### Dokumen RT
-- `GET /api/documents` - Arsip surat dan tata tertib RT
-- `POST /api/documents` - Buat dokumen arsip baru (Pengurus)
+Test integrasi di `tests/` menulis fixture, jadi hanya boleh dijalankan pada server uji port 8302 dengan database terisolasi tanpa Google: `DB_MODE=file DB_FILE_DIR=./.pglite-test UPLOAD_DIR=./.pglite-test/uploads`, setelah provisioning dan impor laporan pada folder tersebut.
