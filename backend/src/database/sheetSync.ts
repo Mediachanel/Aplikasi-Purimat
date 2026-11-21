@@ -30,11 +30,14 @@ interface Table {
 /** Susun kolom tab: tata letak khusus (sheetLayout.ts) atau 1 kolom tabel = 1 kolom tab. */
 function buildEntries(t: Table): LayoutEntry[] {
   const L = t.layout;
-  const entries: LayoutEntry[] = L.entries
-    ? [...L.entries]
-    : t.columns.flatMap((c): LayoutEntry[] =>
-        L.expandJson?.[c.name] ? L.expandJson[c.name].map((j) => ({ label: j.label, json: c.name, key: j.key, format: j.format })) : [{ label: c.name, column: c.name }]
-      );
+  const entries: LayoutEntry[] = [
+    ...(L.prepend ?? []),
+    ...(L.entries
+      ? L.entries
+      : t.columns.flatMap((c): LayoutEntry[] =>
+          L.expandJson?.[c.name] ? L.expandJson[c.name].map((j) => ({ label: j.label, json: c.name, key: j.key, format: j.format })) : [{ label: c.name, column: c.name }]
+        ))
+  ];
   // Pengaman: kolom tabel yang tidak tercakup tetap ikut disimpan (tidak ada data hilang).
   const covered = new Set(entries.flatMap((e) => ('column' in e ? [e.column] : 'json' in e ? [e.json] : [])));
   for (const c of t.columns) if (!covered.has(c.name)) entries.push({ label: c.name, column: c.name });

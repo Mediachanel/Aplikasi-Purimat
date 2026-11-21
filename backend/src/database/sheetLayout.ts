@@ -18,6 +18,8 @@ export interface TableLayout {
   entries?: LayoutEntry[];
   /** Pecah kolom JSON menjadi beberapa kolom, di posisi kolom aslinya. */
   expandJson?: Record<string, { label: string; key: string; format?: 'dmy' }[]>;
+  /** Kolom tambahan di depan (mis. No. Rumah), dipakai bersama daftar kolom bawaan. */
+  prepend?: LayoutEntry[];
   /** Urutan baris (alias tabel: t). */
   orderBy?: string;
   /** Lebarkan kolom otomatis setelah ditulis. */
@@ -26,14 +28,21 @@ export interface TableLayout {
 
 const familyOrder = `CASE t.relationship WHEN 'Kepala Keluarga' THEN 0 WHEN 'Suami' THEN 1 WHEN 'Istri' THEN 2 WHEN 'Anak' THEN 3 WHEN 'Orang Tua' THEN 4 ELSE 5 END, t.birth_date NULLS LAST, t.full_name`;
 const house = (field: string) => `(SELECT r.${field} FROM residents r WHERE r.id = t.resident_id)`;
+// Format nomor rumah seragam di semua tab, sama seperti rekap iuran bendahara: A1 … B11.
+const unitOf = (alias: string) => `replace(${alias}.block_number, 'Blok ', '') || ${alias}.house_number`;
+const houseNo = (alias: string) => `CASE WHEN ${alias}.house_number ~ '^[0-9]+$' THEN ${alias}.house_number::int END`;
+const NO_RUMAH = 'No. Rumah';
+/** No. Rumah untuk tabel yang punya kolom resident_id. */
+const rumahOfResident: LayoutEntry = { label: NO_RUMAH, derived: `(SELECT ${unitOf('r')} FROM residents r WHERE r.id = t.resident_id)` };
+const orderByResident = `(SELECT r.block_number FROM residents r WHERE r.id = t.resident_id), (SELECT ${houseNo('r')} FROM residents r WHERE r.id = t.resident_id)`;
 
 export const SHEET_LAYOUTS: Record<string, TableLayout> = {
   // Urutan kolom mengikuti Kartu Keluarga (kolom 1–17), dikelompokkan per rumah.
   family_members: {
-    orderBy: `(SELECT r.block_number FROM residents r WHERE r.id = t.resident_id), (SELECT CASE WHEN r.house_number ~ '^[0-9]+$' THEN r.house_number::int END FROM residents r WHERE r.id = t.resident_id), ${familyOrder}`,
+    orderBy: `${orderByResident}, ${familyOrder}`,
     autoResize: true,
     entries: [
-      { label: 'Rumah', derived: `(SELECT r.block_number || ' No. ' || r.house_number FROM residents r WHERE r.id = t.resident_id)` },
+      rumahOfResident,
       { label: 'No. KK', derived: house('kk_number') },
       { label: 'No', derived: `row_number() OVER (PARTITION BY t.resident_id ORDER BY ${familyOrder})` },
       { label: 'Nama Lengkap', column: 'full_name' },
@@ -59,7 +68,8 @@ export const SHEET_LAYOUTS: Record<string, TableLayout> = {
   },
   // Alamat KK dipecah: alamat, RT, RW, desa/kelurahan, kecamatan, kab/kota, provinsi, kode pos.
   residents: {
-    orderBy: `t.block_number, CASE WHEN t.house_number ~ '^[0-9]+$' THEN t.house_number::int END, t.house_number, t.id`,
+    prepend: [{ label: NO_RUMAH, derived: unitOf('t') }],
+    orderBy: `t.block_number, ${houseNo('t')}, t.house_number, t.id`,
     expandJson: {
       kk_address: [
         { label: 'kk_alamat', key: 'address' },
@@ -72,5 +82,15 @@ export const SHEET_LAYOUTS: Record<string, TableLayout> = {
         { label: 'kk_kode_pos', key: 'postalCode' }
       ]
     }
+  },
+  // Akun: urut per rumah, No. Rumah di depan.
+  users: {
+    prepend: [rumahOfResident],
+    orderBy: `${orderByResident}, t.id`
+  },
+  // Tagihan: urut per rumah lalu tahun & bulan, No. Rumah di depan.
+  bills: {
+    prepend: [rumahOfResident],
+    orderBy: `${orderByResident}, t.year, t.month_index, t.id`
   }
 };
