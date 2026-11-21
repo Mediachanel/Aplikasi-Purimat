@@ -88,7 +88,8 @@ async function withLock<T>(fn: () => Promise<T>): Promise<T> {
 
 async function run(text: string, params?: any[]): Promise<{ rows: any[]; rowCount: number; fields: any[]; affectedRows?: number }> {
   const res = await db!.query<any>(text, params ?? []);
-  return { ...res, rowCount: res.affectedRows ?? res.rows.length };
+  // Sama seperti pg: SELECT -> jumlah baris hasil; INSERT/UPDATE/DELETE -> jumlah baris terpengaruh.
+  return { ...res, rowCount: Math.max(res.affectedRows ?? 0, res.rows.length) };
 }
 
 async function afterWrite() {
