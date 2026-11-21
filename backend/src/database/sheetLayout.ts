@@ -92,5 +92,36 @@ export const SHEET_LAYOUTS: Record<string, TableLayout> = {
   bills: {
     prepend: [rumahOfResident],
     orderBy: `${orderByResident}, t.year, t.month_index, t.id`
+  },
+  // Pengajuan perubahan data: ringkasan mudah dibaca di depan, paket JSON (usulan & data lama) di kanan.
+  submissions: {
+    orderBy: `t.id`,
+    entries: [
+      rumahOfResident,
+      { label: 'id', column: 'id' },
+      { label: 'Diajukan oleh', derived: `(SELECT u.username FROM users u WHERE u.id = t.submitted_by)` },
+      { label: 'Waktu diajukan (WIB)', derived: `to_char(t.created_at AT TIME ZONE 'Asia/Jakarta', 'DD-MM-YYYY HH24:MI')` },
+      { label: 'Jenis', column: 'type' },
+      { label: 'Judul', column: 'title' },
+      { label: 'Status', column: 'status' },
+      { label: 'Nama diusulkan', derived: `t.payload->>'fullName'` },
+      { label: 'No. KK diusulkan', derived: `t.payload->>'kkNumber'` },
+      { label: 'Jumlah anggota diusulkan', derived: `CASE WHEN jsonb_typeof(t.payload->'family') = 'array' THEN jsonb_array_length(t.payload->'family') END` },
+      { label: 'Anggota diusulkan', derived: `(SELECT string_agg((f->>'fullName') || ' (' || (f->>'relationship') || ')', ', ') FROM jsonb_array_elements(CASE WHEN jsonb_typeof(t.payload->'family') = 'array' THEN t.payload->'family' ELSE '[]'::jsonb END) f)` },
+      { label: 'Kendaraan diusulkan', derived: `(SELECT string_agg((v->>'plateNumber') || ' ' || (v->>'vehicleType') || ' ' || (v->>'brand'), ', ') FROM jsonb_array_elements(CASE WHEN jsonb_typeof(t.payload->'vehicles') = 'array' THEN t.payload->'vehicles' ELSE '[]'::jsonb END) v)` },
+      { label: 'Diperiksa oleh', derived: `(SELECT u.username FROM users u WHERE u.id = t.reviewer_id)` },
+      { label: 'Waktu diperiksa (WIB)', derived: `to_char(t.reviewed_at AT TIME ZONE 'Asia/Jakarta', 'DD-MM-YYYY HH24:MI')` },
+      { label: 'Catatan pemeriksa', column: 'review_note' },
+      // Kolom sistem (jangan diubah manual)
+      { label: 'resident_id', column: 'resident_id' },
+      { label: 'submitted_by', column: 'submitted_by' },
+      { label: 'reviewer_id', column: 'reviewer_id' },
+      { label: 'reviewed_at', column: 'reviewed_at' },
+      { label: 'created_at', column: 'created_at' },
+      { label: 'base_revision', column: 'base_revision' },
+      { label: 'retry_of', column: 'retry_of' },
+      { label: 'payload (usulan, JSON)', column: 'payload' },
+      { label: 'base_profile (data lama, JSON)', column: 'base_profile' }
+    ]
   }
 };
